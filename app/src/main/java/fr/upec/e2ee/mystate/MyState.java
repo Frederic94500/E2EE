@@ -79,7 +79,9 @@ public class MyState {
                         ByteBuffer.wrap(Tools.toBytes(rawData[3])).getInt(),
                         hashedPassword);
             } else {
-                throw new IllegalStateException(" WARNING!!! YOUR FILES HAS BEEN COMPROMISED!\nPLEASE ERASE .MyState, .MyKeyPair, .MyDirectory AND .MyConversations!!!");
+                throw new IllegalStateException("""
+                        WARNING!!! YOUR FILES HAS BEEN COMPROMISED!
+                        PLEASE ERASE .MyState, .MyKeyPair, .MyDirectory AND .MyConversations!!!""");
             }
         } else {
             MyState myState = new MyState(hashedPassword);
