@@ -10,7 +10,6 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.protocol.Keys;
 
 /**
@@ -18,10 +17,6 @@ import fr.upec.e2ee.protocol.Keys;
  * <pre>MUST BE HIDDEN!!! CONTAINS SENSITIVE INFORMATION!!!</pre>
  */
 public class MyKeyPair {
-    /**
-     * Filename
-     */
-    public static final String FILENAME = ".MyKeyPair";
     private final PublicKey myPublicKey;
     private final PrivateKey myPrivateKey;
 
@@ -32,12 +27,6 @@ public class MyKeyPair {
      * @throws NoSuchAlgorithmException           Throws NoSuchAlgorithmException if there is not the expected algorithm
      * @throws NoSuchProviderException            Throws NoSuchProviderException if a security provider is requested but is not available in the environment
      */
-    public MyKeyPair() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
-        KeyPair keyPair = Keys.generate();
-        this.myPublicKey = keyPair.getPublic();
-        this.myPrivateKey = keyPair.getPrivate();
-    }
-
     public MyKeyPair(String alias) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
         KeyPair keyPair = Keys.generate(alias);
         this.myPublicKey = keyPair.getPublic();
@@ -45,17 +34,11 @@ public class MyKeyPair {
     }
 
     /**
-     * Constructor of MyKeyPair if file exist
+     * Constructor of MyKeyPair from known information
      *
-     * @param myPublicKeyBytes  Public Key in byte[]
-     * @param myPrivateKeyBytes Private Key in byte[]
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     * @param privateKey Private key
+     * @param publicKey  Public Key
      */
-    private MyKeyPair(byte[] myPublicKeyBytes, byte[] myPrivateKeyBytes) throws GeneralSecurityException {
-        this.myPublicKey = Tools.toPublicKey(myPublicKeyBytes);
-        this.myPrivateKey = Tools.toPrivateKey(myPrivateKeyBytes);
-    }
-
     private MyKeyPair(PrivateKey privateKey, PublicKey publicKey) {
         this.myPrivateKey = privateKey;
         this.myPublicKey = publicKey;
@@ -71,11 +54,11 @@ public class MyKeyPair {
     public static MyKeyPair load(String alias) throws GeneralSecurityException, IOException {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
-        KeyStore.Entry entry = keyStore.getEntry(alias, null);
-        if (entry instanceof KeyStore.PrivateKeyEntry) {
+        if (keyStore.containsAlias(alias)) {
+            KeyStore.Entry entry = keyStore.getEntry(alias, null);
             return new MyKeyPair(((KeyStore.PrivateKeyEntry) entry).getPrivateKey(), ((KeyStore.PrivateKeyEntry) entry).getCertificate().getPublicKey());
         } else {
-            return new MyKeyPair();
+            return new MyKeyPair(alias);
         }
     }
 

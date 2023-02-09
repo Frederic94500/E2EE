@@ -31,23 +31,12 @@ public class MyState {
     /**
      * Create MyState for unit test
      *
+     * @param hashedPassword Hashed Password
+     * @param alias          Alias for KeyStore
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
-    public MyState(String alias, boolean unitTest) throws GeneralSecurityException {
+    public MyState(String hashedPassword, String alias) throws GeneralSecurityException {
         this.myKeyPair = new MyKeyPair(alias);
-        this.myDirectory = new MyDirectory();
-        this.myConversations = new MyConversations();
-        this.myNonce = 0;
-        this.hashedPassword = Tools.hashPassword("1234");
-    }
-
-    /**
-     * Create MyState if it is the first start
-     *
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public MyState(String hashedPassword) throws GeneralSecurityException {
-        this.myKeyPair = new MyKeyPair();
         this.myDirectory = new MyDirectory();
         this.myConversations = new MyConversations();
         this.myNonce = 0;
@@ -73,16 +62,19 @@ public class MyState {
     /**
      * Load or create a MyState
      *
+     * @param hashedPassword Hashed Password
+     * @param secretKey      SecretKey to decipher file
+     * @param alias          Alias for KeyStore
      * @return Return MyState
      * @throws IOException              Throws IOException if there is an I/O exception
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
-    public static MyState load(String hashedPassword, SecretKey secretKey) throws IOException, GeneralSecurityException {
+    public static MyState load(String hashedPassword, SecretKey secretKey, String alias) throws IOException, GeneralSecurityException {
         if (Tools.isFileExists(FILENAME)) {
             String data = new String(Tools.readFile(MyState.FILENAME));
             String[] rawData = data.split(",");
             if (isEqualsDigest(rawData)) {
-                return new MyState(MyKeyPair.load("fr.upec.e2ee.keypair"),
+                return new MyState(MyKeyPair.load(alias),
                         new MyDirectory(secretKey),
                         new MyConversations(secretKey),
                         ByteBuffer.wrap(Tools.toBytes(rawData[2])).getInt(),
@@ -93,10 +85,23 @@ public class MyState {
                         PLEASE ERASE .MyState, .MyKeyPair, .MyDirectory AND .MyConversations!!!""");
             }
         } else {
-            MyState myState = new MyState(hashedPassword);
+            MyState myState = new MyState(hashedPassword, alias);
             myState.save();
             return myState;
         }
+    }
+
+    /**
+     * Load or create a MyState with default alias
+     *
+     * @param hashedPassword Hashed Password
+     * @param secretKey      SecretKey to decipher file
+     * @return Return MyState
+     * @throws IOException              Throws IOException if there is an I/O exception
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     */
+    public static MyState load(String hashedPassword, SecretKey secretKey) throws GeneralSecurityException, IOException {
+        return load(hashedPassword, secretKey, "fr.upec.e2ee.keypair");
     }
 
     /**
@@ -212,13 +217,25 @@ public class MyState {
     }
 
     /**
-     * Replace MyKeyPair by a new one and save the new one
+     * Replace MyKeyPair by a new one and save the new one. Alias by default: fr.upec.e2ee.keypair
      *
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      * @throws IOException              Throws IOException if there is an I/O exception
      */
     public void replaceMyKeyPair() throws GeneralSecurityException, IOException {
-        this.myKeyPair = new MyKeyPair();
+        this.myKeyPair = new MyKeyPair("fr.upec.e2ee.keypair");
+        this.save();
+    }
+
+    /**
+     * Replace MyKeyPair by a new one and save the new one.
+     *
+     * @param alias Alias for KeyStore
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     * @throws IOException              Throws IOException if there is an I/O exception
+     */
+    public void replaceMyKeyPair(String alias) throws GeneralSecurityException, IOException {
+        this.myKeyPair = new MyKeyPair(alias);
         this.save();
     }
 }

@@ -32,7 +32,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import fr.upec.e2ee.mystate.MyKeyPair;
+import fr.upec.e2ee.mystate.MyDirectory;
 import fr.upec.e2ee.mystate.MyState;
 import fr.upec.e2ee.protocol.Cipher;
 
@@ -320,10 +320,8 @@ public class Tools {
      * @throws FileNotFoundException    Throws FileNotFoundException if there file is not found
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
-    public static SecretKey loadSecretKey(String hashedPassword) throws FileNotFoundException, GeneralSecurityException {
-        Context context = E2EE.getContext();
-        Scanner scanner = new Scanner(new File(context.getFilesDir(), MyState.FILENAME));
-        String data = scanner.nextLine();
+    public static SecretKey loadSecretKey(String hashedPassword) throws IOException, GeneralSecurityException {
+        String data = new String(readFile(MyState.FILENAME));
         String[] rawData = data.split(",");
 
         return getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.toBytes(rawData[3]));
@@ -367,7 +365,7 @@ public class Tools {
      */
     public static Boolean testSecretKey(SecretKey secretKey) throws IOException {
         try {
-            Cipher.decipher(secretKey, Tools.readFile(MyKeyPair.FILENAME));
+            Cipher.decipher(secretKey, Tools.readFile(MyDirectory.FILENAME));
         } catch (GeneralSecurityException e) {
             return false;
         }

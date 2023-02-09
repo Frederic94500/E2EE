@@ -42,8 +42,8 @@ public class MainTest {
 
     @BeforeClass
     public static void setupClass() throws GeneralSecurityException {
-        user1 = new MyState("fr.upec.e2ee.keypair.unittest1", true);
-        user2 = new MyState("fr.upec.e2ee.keypair.unittest2", true);
+        user1 = new MyState(Tools.hashPassword("1234"), "fr.upec.e2ee.keypair.unittest1");
+        user2 = new MyState(Tools.hashPassword("1234"), "fr.upec.e2ee.keypair.unittest2");
     }
 
     @AfterClass
@@ -59,7 +59,6 @@ public class MainTest {
     @Before
     public void deleteFilesBefore() {
         Tools.deleteFile(MyState.FILENAME);
-        Tools.deleteFile(MyKeyPair.FILENAME);
         Tools.deleteFile(MyDirectory.FILENAME);
         Tools.deleteFile(MyConversations.FILENAME);
     }
@@ -67,7 +66,6 @@ public class MainTest {
     @After
     public void deleteFilesAfter() {
         Tools.deleteFile(MyState.FILENAME);
-        Tools.deleteFile(MyKeyPair.FILENAME);
         Tools.deleteFile(MyDirectory.FILENAME);
         Tools.deleteFile(MyConversations.FILENAME);
     }
@@ -151,11 +149,11 @@ public class MainTest {
     @Test
     public void testSaveAndLoadMyState() throws GeneralSecurityException, IOException {
         String hashedPassword = Tools.hashPassword("1234");
-        MyState myState = new MyState(hashedPassword);
+        MyState myState = user1;
         myState.save();
 
         SecretKey newSecretKey = Tools.loadSecretKey(hashedPassword);
-        MyState myStateFile = MyState.load(hashedPassword, newSecretKey);
+        MyState myStateFile = MyState.load(hashedPassword, newSecretKey, "fr.upec.e2ee.keypair.unittest1");
 
         assertArrayEquals(myState.getMyPublicKey().getEncoded(), myStateFile.getMyPublicKey().getEncoded());
         assertArrayEquals(myState.getMyPrivateKey().getEncoded(), myStateFile.getMyPrivateKey().getEncoded());
@@ -199,7 +197,7 @@ public class MainTest {
         SecretKey secretKey = Tools.loadSecretKey(hashedPassword);
         MyState myStateFile = MyState.load(hashedPassword, secretKey);
 
-        user1.replaceMyKeyPair();
+        user1.replaceMyKeyPair("fr.upec.e2ee.keypair.unittest1");
 
         assertFalse(Arrays.equals(myStateFile.getMyPublicKey().getEncoded(), user1.getMyPublicKey().getEncoded()));
     }
@@ -247,11 +245,11 @@ public class MainTest {
         myStatePhone.save();
 
         SecretKey newSecretKey = Tools.loadSecretKey(hashedPassword);
-        MyState myStateFile = MyState.load(hashedPassword, newSecretKey);
+        MyState myStatePhoneFile = MyState.load(hashedPassword, newSecretKey);
 
-        assertArrayEquals(myStatePhone.getMyPublicKey().getEncoded(), myStateFile.getMyPublicKey().getEncoded());
-        assertArrayEquals(myStatePhone.getMyPrivateKey().getEncoded(), myStateFile.getMyPrivateKey().getEncoded());
-        assertEquals(myStatePhone.getMyNonce(), myStateFile.getMyNonce());
+        assertArrayEquals(myStatePhone.getMyPublicKey().getEncoded(), myStatePhoneFile.getMyPublicKey().getEncoded());
+        assertArrayEquals(myStatePhone.getMyPrivateKey().getEncoded(), myStatePhoneFile.getMyPrivateKey().getEncoded());
+        assertEquals(myStatePhone.getMyNonce(), myStatePhoneFile.getMyNonce());
 
         //Create Conversation
         Message1 message1User1 = new Message1(System.currentTimeMillis() / 1000L, myStatePhone.getMyNonce());
