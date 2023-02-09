@@ -11,7 +11,7 @@ import java.security.PublicKey;
 import javax.crypto.SecretKey;
 
 import fr.upec.e2ee.Tools;
-import fr.upec.e2ee.protocol.SecretBuild;
+import fr.upec.e2ee.protocol.Conversation;
 
 /**
  * Contain user state
@@ -205,10 +205,10 @@ public class MyState {
     /**
      * Add a new conversation to the list of conversations
      *
-     * @param secretBuild SecretBuild from the new conversation
+     * @param conversation SecretBuild from the new conversation
      */
-    public void addAConversation(SecretBuild secretBuild) {
-        myConversations.addConversation(secretBuild);
+    public void addAConversation(Conversation conversation) {
+        myConversations.addConversation(conversation);
     }
 
     /**

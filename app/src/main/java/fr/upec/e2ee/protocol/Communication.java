@@ -11,8 +11,8 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import fr.upec.e2ee.mystate.MyDirectory;
 import fr.upec.e2ee.Tools;
+import fr.upec.e2ee.mystate.MyDirectory;
 
 /**
  * Create and Handle Messages
@@ -93,16 +93,15 @@ public class Communication {
      * @return Return the name of the sender if the message 2 is authentic and come from the other user
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
-    public static String handleMessage2(MyDirectory myDirectory, SecretBuild mySecretBuild, String otherMessage2) throws GeneralSecurityException {
+    public static Conversation handleMessage2(MyDirectory myDirectory, SecretBuild mySecretBuild, String otherMessage2) throws GeneralSecurityException {
         SecretBuild otherSecretBuild = new SecretBuild(mySecretBuild); //Swap information without symKey
         byte[] expectedMessage2 = otherSecretBuild.toBytesWithoutSymKey();
 
         byte[] cipheredSignedOtherMessage2 = toBytes(otherMessage2);
         byte[] signedMessage = Cipher.decipher(toSecretKey(mySecretBuild.getSymKey()), cipheredSignedOtherMessage2);
 
-        String validated = myDirectory.getSigner(signedMessage, expectedMessage2); //null == invalid
-        mySecretBuild.setName(validated);
+        String otherPersonName = myDirectory.getSigner(signedMessage, expectedMessage2); //null == invalid
 
-        return validated;
+        return new Conversation(otherPersonName, mySecretBuild.getMyDate(), mySecretBuild.getSymKey());
     }
 }

@@ -198,6 +198,4 @@ public class SecretBuild {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }

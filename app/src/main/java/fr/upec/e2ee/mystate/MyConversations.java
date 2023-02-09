@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import fr.upec.e2ee.protocol.Cipher;
-import fr.upec.e2ee.protocol.SecretBuild;
 import fr.upec.e2ee.Tools;
+import fr.upec.e2ee.protocol.Cipher;
+import fr.upec.e2ee.protocol.Conversation;
 
 /**
  * MyConversations contains SecretBuild for each conversation
@@ -23,7 +23,7 @@ public class MyConversations {
      * Filename
      */
     public static final String FILENAME = ".MyConversations";
-    private final List<SecretBuild> myConversations;
+    private final List<Conversation> myConversations;
 
     public MyConversations() {
         this.myConversations = new ArrayList<>();
@@ -44,8 +44,8 @@ public class MyConversations {
      * @return Return an ArrayList of SecretBuild
      * @throws FileNotFoundException Throws FileNotFoundException if the file was not found
      */
-    public List<SecretBuild> load(SecretKey secretKey) throws IOException, GeneralSecurityException {
-        ArrayList<SecretBuild> myConversations = new ArrayList<>();
+    public List<Conversation> load(SecretKey secretKey) throws IOException, GeneralSecurityException {
+        ArrayList<Conversation> myConversations = new ArrayList<>();
         if (Tools.isFileExists(FILENAME)) {
             byte[] cipheredData = Tools.readFile(FILENAME);
             if (cipheredData.length != 0) {
@@ -54,7 +54,9 @@ public class MyConversations {
                 String[] rawConversations = new String(rawData).split(",");
                 for (String rawConversation : rawConversations) {
                     String[] splitConversation = rawConversation.split(":");
-                    myConversations.add(new SecretBuild(new String(Tools.toBytes(splitConversation[0])), Tools.toBytes(splitConversation[1])));
+                    myConversations.add(new Conversation(new String(Tools.toBytes(splitConversation[0])),
+                            Tools.bytesToLong(Tools.toBytes(splitConversation[1])),
+                            Tools.toBytes(splitConversation[2])));
                 }
             }
         }
@@ -68,7 +70,9 @@ public class MyConversations {
      */
     public void save(SecretKey secretKey) throws IOException, GeneralSecurityException {
         String rawConversations = myConversations.stream()
-                .map(secretBuild -> Tools.toBase64(secretBuild.getName().getBytes(StandardCharsets.UTF_8)) + ":" + Tools.toBase64(secretBuild.toBytesWithSymKey()))
+                .map(conversation -> Tools.toBase64(conversation.getName().getBytes(StandardCharsets.UTF_8)) + ":" +
+                        Tools.toBase64(Tools.longToByteArray(conversation.getDate())) + ":" +
+                        Tools.toBase64(conversation.getSecretKey()))
                 .collect(Collectors.joining(","));
 
         if (myConversations.size() > 0) {
@@ -92,10 +96,10 @@ public class MyConversations {
     /**
      * Add a new conversation to the list of conversations
      *
-     * @param secretBuild SecretBuild to be added
+     * @param conversation Conversation to be added
      */
-    public void addConversation(SecretBuild secretBuild) {
-        myConversations.add(secretBuild);
+    public void addConversation(Conversation conversation) {
+        myConversations.add(conversation);
     }
 
     /**
@@ -104,16 +108,16 @@ public class MyConversations {
      * @param index Index of the conversation
      * @return Return a conversation (as SecretBuild)
      */
-    public SecretBuild getConversation(int index) {
+    public Conversation getConversation(int index) {
         return myConversations.get(index);
     }
 
     /**
      * Delete a conversation
      *
-     * @param secretBuild Conversation (as SecretBuild) to be deleted
+     * @param conversation Conversation (as SecretBuild) to be deleted
      */
-    public void deleteConversation(SecretBuild secretBuild) {
-        myConversations.remove(secretBuild);
+    public void deleteConversation(Conversation conversation) {
+        myConversations.remove(conversation);
     }
 }

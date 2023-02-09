@@ -21,7 +21,7 @@ public class MyKeyPair {
     private final PrivateKey myPrivateKey;
 
     /**
-     * Constructor of MyKeyPair if file does not exist
+     * Constructor of MyKeyPair if it does not exist
      *
      * @throws InvalidAlgorithmParameterException InvalidAlgorithmParameterException if there is an invalid or inappropriate algorithm parameter
      * @throws NoSuchAlgorithmException           Throws NoSuchAlgorithmException if there is not the expected algorithm

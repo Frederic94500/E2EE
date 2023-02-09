@@ -190,16 +190,24 @@ public class Tools {
     }
 
     /**
-     * Transform Bytes to int from byte[]
+     * Transform Bytes to Long
      *
-     * @param tab  byte[] source
-     * @param from Start index
-     * @param to   End index
-     * @return Return an int
+     * @param input byte[] input
+     * @return Return a Long
      */
-    public static int toInteger(byte[] tab, int from, int to) {
-        ByteBuffer bb = ByteBuffer.wrap(copyOfRange(tab, from, to));
-        return bb.getInt();
+    public static Long bytesToLong(byte[] input) {
+        return toLong(input, 0, 8);
+    }
+
+    /**
+     * Convert Long to Bytes
+     *
+     * @param input Long input
+     * @return Return byte[]
+     */
+    public static byte[] longToByteArray(long input) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(8);
+        return byteBuffer.putLong(input).array();
     }
 
     /**
