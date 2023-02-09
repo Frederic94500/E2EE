@@ -22,6 +22,10 @@ public class MyState {
      * Filename
      */
     public static final String FILENAME = ".MyState";
+    /**
+     * Default alias for KetStore
+     */
+    public static final String DEFAULT_ALIAS = "fr.upec.e2ee.keypair";
     private final MyDirectory myDirectory;
     private final MyConversations myConversations;
     private final String hashedPassword;
@@ -101,7 +105,7 @@ public class MyState {
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
     public static MyState load(String hashedPassword, SecretKey secretKey) throws GeneralSecurityException, IOException {
-        return load(hashedPassword, secretKey, "fr.upec.e2ee.keypair");
+        return load(hashedPassword, secretKey, DEFAULT_ALIAS);
     }
 
     /**
@@ -223,7 +227,7 @@ public class MyState {
      * @throws IOException              Throws IOException if there is an I/O exception
      */
     public void replaceMyKeyPair() throws GeneralSecurityException, IOException {
-        this.myKeyPair = new MyKeyPair("fr.upec.e2ee.keypair");
+        this.myKeyPair = new MyKeyPair(DEFAULT_ALIAS);
         this.save();
     }
 
