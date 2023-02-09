@@ -1,19 +1,17 @@
 package fr.upec.e2ee.mystate;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import javax.crypto.SecretKey;
-
-import fr.upec.e2ee.protocol.Cipher;
-import fr.upec.e2ee.protocol.Keys;
 import fr.upec.e2ee.Tools;
+import fr.upec.e2ee.protocol.Keys;
 
 /**
  * Store the PublicKey and the PrivateKey of the user
@@ -32,9 +30,16 @@ public class MyKeyPair {
      *
      * @throws InvalidAlgorithmParameterException InvalidAlgorithmParameterException if there is an invalid or inappropriate algorithm parameter
      * @throws NoSuchAlgorithmException           Throws NoSuchAlgorithmException if there is not the expected algorithm
+     * @throws NoSuchProviderException            Throws NoSuchProviderException if a security provider is requested but is not available in the environment
      */
-    public MyKeyPair() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+    public MyKeyPair() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
         KeyPair keyPair = Keys.generate();
+        this.myPublicKey = keyPair.getPublic();
+        this.myPrivateKey = keyPair.getPrivate();
+    }
+
+    public MyKeyPair(String alias) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
+        KeyPair keyPair = Keys.generate(alias);
         this.myPublicKey = keyPair.getPublic();
         this.myPrivateKey = keyPair.getPrivate();
     }
@@ -51,6 +56,11 @@ public class MyKeyPair {
         this.myPrivateKey = Tools.toPrivateKey(myPrivateKeyBytes);
     }
 
+    private MyKeyPair(PrivateKey privateKey, PublicKey publicKey) {
+        this.myPrivateKey = privateKey;
+        this.myPublicKey = publicKey;
+    }
+
     /**
      * Load .MyKeyPair or generate a new one and return a MyKeyPair
      *
@@ -58,11 +68,12 @@ public class MyKeyPair {
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      * @throws IOException              Throws IOException if there is an I/O exception
      */
-    public static MyKeyPair load(SecretKey secretKey) throws GeneralSecurityException, IOException {
-        if (Tools.isFileExists(FILENAME)) {
-            String output = new String(Cipher.decipher(secretKey, Tools.readFile(FILENAME)));
-            String[] dataBase64 = output.split(",");
-            return new MyKeyPair(Tools.toBytes(dataBase64[0]), Tools.toBytes(dataBase64[1]));
+    public static MyKeyPair load(String alias) throws GeneralSecurityException, IOException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+        KeyStore.Entry entry = keyStore.getEntry(alias, null);
+        if (entry instanceof KeyStore.PrivateKeyEntry) {
+            return new MyKeyPair(((KeyStore.PrivateKeyEntry) entry).getPrivateKey(), ((KeyStore.PrivateKeyEntry) entry).getCertificate().getPublicKey());
         } else {
             return new MyKeyPair();
         }
@@ -84,20 +95,5 @@ public class MyKeyPair {
      */
     public PrivateKey getMyPrivateKey() {
         return myPrivateKey;
-    }
-
-    /**
-     * Save MyKeyPair
-     *
-     * @throws IOException Throws IOException if there is an I/O exception
-     */
-    public void save(SecretKey secretKey) throws IOException, GeneralSecurityException {
-        String myPublicKeyBase64 = Tools.toBase64(myPublicKey.getEncoded());
-        String myPrivateKeyBase64 = Tools.toBase64(myPrivateKey.getEncoded());
-        String input = myPublicKeyBase64 + "," + myPrivateKeyBase64;
-
-        byte[] cipheredOutput = Cipher.cipher(secretKey, input.getBytes(StandardCharsets.UTF_8));
-
-        Tools.writeToFile(FILENAME, cipheredOutput);
     }
 }

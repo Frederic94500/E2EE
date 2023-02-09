@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 import javax.crypto.AEADBadTagException;
 import javax.crypto.SecretKey;
 
+import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.protocol.Cipher;
 import fr.upec.e2ee.protocol.Sign;
-import fr.upec.e2ee.Tools;
 
 /**
  * MyDirectory contains a list of persons

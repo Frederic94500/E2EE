@@ -18,7 +18,7 @@ public class Sign {
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
     public static byte[] sign(PrivateKey privateKey, byte[] input) throws GeneralSecurityException {
-        Signature signature = Signature.getInstance("SHA512withECDSAinP1363Format");
+        Signature signature = Signature.getInstance("SHA512withECDSA"); //SHOULD BE SHA512withECDSAinP1363Format
         //Need to have an ID verification in Android
         signature.initSign(privateKey);
 
@@ -37,7 +37,7 @@ public class Sign {
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
     public static Boolean verify(PublicKey publicKey, byte[] signedMessage, byte[] expectedMessage) throws GeneralSecurityException {
-        Signature signature = Signature.getInstance("SHA512withECDSAinP1363Format");
+        Signature signature = Signature.getInstance("SHA512withECDSA"); //SHOULD BE SHA512withECDSAinP1363Format
         signature.initVerify(publicKey);
 
         signature.update(expectedMessage);

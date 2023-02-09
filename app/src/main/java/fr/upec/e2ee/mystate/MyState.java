@@ -1,14 +1,12 @@
 package fr.upec.e2ee.mystate;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Scanner;
 
 import javax.crypto.SecretKey;
 
@@ -29,6 +27,19 @@ public class MyState {
     private final String hashedPassword;
     private MyKeyPair myKeyPair;
     private int myNonce;
+
+    /**
+     * Create MyState for unit test
+     *
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     */
+    public MyState(String alias, boolean unitTest) throws GeneralSecurityException {
+        this.myKeyPair = new MyKeyPair(alias);
+        this.myDirectory = new MyDirectory();
+        this.myConversations = new MyConversations();
+        this.myNonce = 0;
+        this.hashedPassword = Tools.hashPassword("1234");
+    }
 
     /**
      * Create MyState if it is the first start
@@ -68,15 +79,13 @@ public class MyState {
      */
     public static MyState load(String hashedPassword, SecretKey secretKey) throws IOException, GeneralSecurityException {
         if (Tools.isFileExists(FILENAME)) {
-            Scanner scanner = new Scanner(new File(FILENAME));
-            String data = scanner.nextLine();
-            scanner.close();
+            String data = new String(Tools.readFile(MyState.FILENAME));
             String[] rawData = data.split(",");
             if (isEqualsDigest(rawData)) {
-                return new MyState(MyKeyPair.load(secretKey),
+                return new MyState(MyKeyPair.load("fr.upec.e2ee.keypair"),
                         new MyDirectory(secretKey),
                         new MyConversations(secretKey),
-                        ByteBuffer.wrap(Tools.toBytes(rawData[3])).getInt(),
+                        ByteBuffer.wrap(Tools.toBytes(rawData[2])).getInt(),
                         hashedPassword);
             } else {
                 throw new IllegalStateException("""
@@ -99,9 +108,8 @@ public class MyState {
      * @throws NoSuchAlgorithmException Throws NoSuchAlgorithmException if there is not the expected algorithm
      */
     private static boolean isEqualsDigest(String[] rawData) throws IOException, NoSuchAlgorithmException {
-        return rawData[0].equals(Tools.digest(MyKeyPair.FILENAME))
-                && rawData[1].equals(Tools.digest(MyDirectory.FILENAME))
-                && rawData[2].equals(Tools.digest(MyConversations.FILENAME));
+        return rawData[0].equals(Tools.digest(MyDirectory.FILENAME))
+                && rawData[1].equals(Tools.digest(MyConversations.FILENAME));
     }
 
 
@@ -174,21 +182,15 @@ public class MyState {
         byte[] salt = Tools.generateRandomBytes(32);
         SecretKey secretKey = Tools.getSecretKeyPBKDF2(hashedPassword.toCharArray(), salt);
 
-        myKeyPair.save(secretKey);
         myDirectory.saveFile(secretKey);
         myConversations.save(secretKey);
-        String checksumMyKeyPair = Tools.digest(MyKeyPair.FILENAME);
+
         String checksumMyDirectory = Tools.digest(MyDirectory.FILENAME);
         String checksumMyConversations = Tools.digest(MyConversations.FILENAME);
         String myNonceBase64 = Tools.toBase64(ByteBuffer.allocate(4).putInt(myNonce).array());
         String saltBase64 = Tools.toBase64(salt);
 
-        if (!Tools.isFileExists(FILENAME)) {
-            Tools.createFile(FILENAME);
-        }
-        FileWriter writer = new FileWriter(FILENAME);
-        writer.write(checksumMyKeyPair + "," + checksumMyDirectory + "," + checksumMyConversations + "," + myNonceBase64 + "," + saltBase64);
-        writer.close();
+        Tools.writeToFile(MyState.FILENAME, (checksumMyDirectory + "," + checksumMyConversations + "," + myNonceBase64 + "," + saltBase64).getBytes(StandardCharsets.UTF_8));
     }
 
     /**

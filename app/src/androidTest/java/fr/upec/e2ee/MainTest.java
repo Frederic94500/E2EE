@@ -1,8 +1,13 @@
 package fr.upec.e2ee;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,6 +15,10 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 
 import javax.crypto.AEADBadTagException;
@@ -32,9 +41,19 @@ public class MainTest {
     static private SecretBuild sbUser2;
 
     @BeforeClass
-    public static void setupClass() throws GeneralSecurityException, IOException {
-        user1 = new MyState(Tools.hashPassword("toto"));
-        user2 = new MyState(Tools.hashPassword("tata"));
+    public static void setupClass() throws GeneralSecurityException {
+        user1 = new MyState("fr.upec.e2ee.keypair.unittest1", true);
+        user2 = new MyState("fr.upec.e2ee.keypair.unittest2", true);
+    }
+
+    @AfterClass
+    public static void deleteClass() throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+        keyStore.deleteEntry("fr.upec.e2ee.keypair");
+        keyStore.deleteEntry("fr.upec.e2ee.keypair.unittest1");
+        keyStore.deleteEntry("fr.upec.e2ee.keypair.unittest2");
+        keyStore.deleteEntry("fr.upec.e2ee.keypair.unittest3");
     }
 
     @Before
@@ -121,10 +140,9 @@ public class MainTest {
 
     @Test
     public void testSaveAndLoadMyKeyPair() throws GeneralSecurityException, IOException {
-        SecretKey secretKey = Tools.getSecretKeyPBKDF2("1234".toCharArray(), Tools.generateRandomBytes(32), 1024);
-        MyKeyPair myKeyPair = new MyKeyPair(); //Without File
-        myKeyPair.save(secretKey);
-        MyKeyPair myKeyPairViaFile = MyKeyPair.load(secretKey); //With File
+        MyKeyPair myKeyPair = new MyKeyPair("fr.upec.e2ee.keypair.unittest3"); //Without File
+
+        MyKeyPair myKeyPairViaFile = MyKeyPair.load("fr.upec.e2ee.keypair.unittest3"); //With File
 
         assertArrayEquals(myKeyPair.getMyPublicKey().getEncoded(), myKeyPairViaFile.getMyPublicKey().getEncoded());
         assertArrayEquals(myKeyPair.getMyPrivateKey().getEncoded(), myKeyPairViaFile.getMyPrivateKey().getEncoded());
@@ -176,17 +194,14 @@ public class MainTest {
     public void testReplaceMyKeyPair() throws GeneralSecurityException, IOException {
         String hashedPassword = Tools.hashPassword("1234");
 
-        MyState myState = new MyState(hashedPassword);
-        myState.save();
+        user1.save();
 
         SecretKey secretKey = Tools.loadSecretKey(hashedPassword);
         MyState myStateFile = MyState.load(hashedPassword, secretKey);
-        String digestFile = Tools.digest(MyKeyPair.FILENAME);
 
-        myState.replaceMyKeyPair();
+        user1.replaceMyKeyPair();
 
-        assertFalse(Arrays.equals(myStateFile.getMyPublicKey().getEncoded(), myState.getMyPublicKey().getEncoded()));
-        assertNotEquals(digestFile, Tools.digest(MyKeyPair.FILENAME));
+        assertFalse(Arrays.equals(myStateFile.getMyPublicKey().getEncoded(), user1.getMyPublicKey().getEncoded()));
     }
 
     @Test
@@ -226,47 +241,47 @@ public class MainTest {
         //Create MyState
         String hashedPassword = Tools.hashPassword("1234");
         SecretKey secretKey = Tools.getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.generateRandomBytes(32), 1024);
-        MyState myStateUser1 = MyState.load(hashedPassword, secretKey);
+        MyState myStatePhone = MyState.load(hashedPassword, secretKey);
 
-        myStateUser1.incrementMyNonce();
-        myStateUser1.save();
+        myStatePhone.incrementMyNonce();
+        myStatePhone.save();
 
         SecretKey newSecretKey = Tools.loadSecretKey(hashedPassword);
         MyState myStateFile = MyState.load(hashedPassword, newSecretKey);
 
-        assertArrayEquals(myStateUser1.getMyPublicKey().getEncoded(), myStateFile.getMyPublicKey().getEncoded());
-        assertArrayEquals(myStateUser1.getMyPrivateKey().getEncoded(), myStateFile.getMyPrivateKey().getEncoded());
-        assertEquals(myStateUser1.getMyNonce(), myStateFile.getMyNonce());
+        assertArrayEquals(myStatePhone.getMyPublicKey().getEncoded(), myStateFile.getMyPublicKey().getEncoded());
+        assertArrayEquals(myStatePhone.getMyPrivateKey().getEncoded(), myStateFile.getMyPrivateKey().getEncoded());
+        assertEquals(myStatePhone.getMyNonce(), myStateFile.getMyNonce());
 
         //Create Conversation
-        Message1 message1User1 = new Message1(System.currentTimeMillis() / 1000L, myStateUser1.getMyNonce());
+        Message1 message1User1 = new Message1(System.currentTimeMillis() / 1000L, myStatePhone.getMyNonce());
         Message1 message1User2 = new Message1(System.currentTimeMillis() / 1000L, user2.getMyNonce());
 
-        user2.getMyDirectory().addPerson("user1", myStateUser1.getMyPublicKey().getEncoded());
+        user2.getMyDirectory().addPerson("user1", myStatePhone.getMyPublicKey().getEncoded());
         String message1User1For2 = Communication.createMessage1(message1User1);
         SecretBuild secretBuildUser2 = Communication.handleMessage1(message1User2, message1User1For2);
 
-        myStateUser1.getMyDirectory().addPerson("user2", user2.getMyPublicKey().getEncoded());
+        myStatePhone.getMyDirectory().addPerson("user2", user2.getMyPublicKey().getEncoded());
         String message1User2For1 = Communication.createMessage1(message1User2);
         SecretBuild secretBuildUser1 = Communication.handleMessage1(message1User1, message1User2For1);
 
         assertTrue(secretBuildUser1.equals(secretBuildUser2));
 
-        String message2User1 = Communication.createMessage2(myStateUser1.getMyPrivateKey(), secretBuildUser1);
+        String message2User1 = Communication.createMessage2(myStatePhone.getMyPrivateKey(), secretBuildUser1);
         String message2User2 = Communication.createMessage2(user2.getMyPrivateKey(), secretBuildUser2);
 
         assertEquals("user1", Communication.handleMessage2(user2.getMyDirectory(), secretBuildUser2, message2User1));
-        assertEquals("user2", Communication.handleMessage2(myStateUser1.getMyDirectory(), secretBuildUser1, message2User2));
+        assertEquals("user2", Communication.handleMessage2(myStatePhone.getMyDirectory(), secretBuildUser1, message2User2));
         //End create Conversation
 
         //Add Conversation to MyState
-        myStateUser1.addAConversation(secretBuildUser1);
-        myStateUser1.incrementMyNonce();
-        myStateUser1.save();
+        myStatePhone.addAConversation(secretBuildUser1);
+        myStatePhone.incrementMyNonce();
+        myStatePhone.save();
 
-        assertEquals(1, myStateUser1.getMyConversations().getSize());
+        assertEquals(1, myStatePhone.getMyConversations().getSize());
 
-        MyConversations myConversationsUser1 = myStateUser1.getMyConversations();
+        MyConversations myConversationsUser1 = myStatePhone.getMyConversations();
 
         //Test cipher/decipher message
         String textString = "Another bites the dust";
@@ -278,7 +293,7 @@ public class MainTest {
 
         //Delete a Conversation
         myConversationsUser1.deleteConversation(myConversationsUser1.getConversation(0));
-        myStateUser1.save();
+        myStatePhone.save();
 
         assertEquals(0, myConversationsUser1.getSize());
     }

@@ -2,6 +2,8 @@ package fr.upec.e2ee;
 
 import static java.util.Arrays.copyOfRange;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -9,7 +11,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
@@ -208,7 +209,8 @@ public class Tools {
      * @return Return a boolean if the file exists
      */
     public static boolean isFileExists(String filename) {
-        return new File(filename).exists();
+        Context context = E2EE.getContext();
+        return new File(context.getFilesDir(), filename).exists();
     }
 
     /**
@@ -216,12 +218,9 @@ public class Tools {
      *
      * @param filename File to create
      */
-    public static void createFile(String filename) {
-        try {
-            new File(filename).createNewFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void createFile(String filename) throws IOException {
+        Context context = E2EE.getContext();
+        new File(context.getFilesDir(), filename).createNewFile();
     }
 
     /**
@@ -230,7 +229,8 @@ public class Tools {
      * @param filename File to be deleted
      */
     public static void deleteFile(String filename) {
-        new File(filename).delete();
+        Context context = E2EE.getContext();
+        new File(context.getFilesDir(), filename).delete();
     }
 
     /**
@@ -242,7 +242,7 @@ public class Tools {
      * @throws NoSuchAlgorithmException Throws NoSuchAlgorithmException if there is not the expected algorithm
      */
     public static String digest(String filename) throws IOException, NoSuchAlgorithmException {
-        byte[] digest = MessageDigest.getInstance("SHA-512").digest(Files.readAllBytes(Paths.get(filename)));
+        byte[] digest = MessageDigest.getInstance("SHA-512").digest(Tools.readFile(filename));
         StringBuilder sb = new StringBuilder();
         for (byte b : digest) {
             sb.append(String.format("%02x", b));
@@ -321,11 +321,12 @@ public class Tools {
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
      */
     public static SecretKey loadSecretKey(String hashedPassword) throws FileNotFoundException, GeneralSecurityException {
-        Scanner scanner = new Scanner(new File(MyState.FILENAME));
+        Context context = E2EE.getContext();
+        Scanner scanner = new Scanner(new File(context.getFilesDir(), MyState.FILENAME));
         String data = scanner.nextLine();
         String[] rawData = data.split(",");
 
-        return getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.toBytes(rawData[4]));
+        return getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.toBytes(rawData[3]));
     }
 
     /**
@@ -465,10 +466,11 @@ public class Tools {
      * @throws IOException Throws IOException if there is an I/O exception
      */
     public static void writeToFile(String filename, byte[] input) throws IOException {
+        Context context = E2EE.getContext();
         if (!isFileExists(filename)) {
             createFile(filename);
         }
-        try (FileOutputStream fileOutputStream = new FileOutputStream(filename)) {
+        try (FileOutputStream fileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
             fileOutputStream.write(input);
         }
     }
@@ -481,6 +483,7 @@ public class Tools {
      * @throws IOException Throws IOException if there is an I/O exception
      */
     public static byte[] readFile(String filename) throws IOException {
-        return Files.readAllBytes(new File(filename).toPath());
+        Context context = E2EE.getContext();
+        return Files.readAllBytes(new File(context.getFilesDir(), filename).toPath());
     }
 }
