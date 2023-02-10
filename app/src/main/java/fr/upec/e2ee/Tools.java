@@ -15,14 +15,11 @@ import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -83,17 +80,6 @@ public class Tools {
      */
     public static PublicKey toPublicKey(byte[] bytesPubKey) throws GeneralSecurityException {
         return KeyFactory.getInstance("EC").generatePublic(new X509EncodedKeySpec(bytesPubKey));
-    }
-
-    /**
-     * Decode Bytes to PrivateKey
-     *
-     * @param privateKeyBytes Bytes Private Key
-     * @return Return PrivateKey
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public static PrivateKey toPrivateKey(byte[] privateKeyBytes) throws GeneralSecurityException {
-        return KeyFactory.getInstance("EC").generatePrivate(new PKCS8EncodedKeySpec(privateKeyBytes));
     }
 
     /**
@@ -378,50 +364,6 @@ public class Tools {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Get user input for option in CLI
-     *
-     * @param scanner Scanner for user input
-     * @param max     Maximum number for option
-     * @return Return the number of the option
-     */
-    public static int getInput(Scanner scanner, int max) {
-        boolean typing = true;
-        int input = 0;
-
-        while (typing) {
-            try {
-                System.out.print("Type your command: ");
-                input = scanner.nextInt();
-                if (0 <= input && input <= max) {
-                    typing = false;
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Error! Unrecognized command!");
-                scanner.next();
-            }
-        }
-
-        return input;
-    }
-
-    /**
-     * Get user input
-     *
-     * @param scanner  Scanner for user input
-     * @param sentence Sentence for the input
-     * @return Return user input
-     */
-    public static String getInput(Scanner scanner, String sentence) {
-        System.out.print(sentence);
-
-        String input = scanner.next();
-        if (input.equals("0")) {
-            return "0";
-        }
-        return input;
     }
 
     /**
