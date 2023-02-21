@@ -35,10 +35,8 @@
                     android:layout_alignParentEnd="true"
                     android:background="@android:color/holo_red_light"
                     android:text="Delete"
-                    android:textColor="@color/white"
-                    android:layout_alignParentEndRight="true">
+                    android:textColor="@color/white" />
 
-                </Button>
 
 
             </RelativeLayout>
