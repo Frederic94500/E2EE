@@ -17,7 +17,6 @@ public class Activity2 extends AppCompatActivity {
     LinearLayout layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity2);
         add=findViewById(R.id.add);
