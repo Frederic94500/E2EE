@@ -23,16 +23,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.068" />
-        <TextView
-            android:id="@+id/text_contacts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CONTACTS"
-            />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="VOIR"
+        android:text="AFFICHER"
         android:background="#FF0000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
