@@ -1,18 +1,15 @@
 package fr.upec.e2ee.ui.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import fr.upec.e2ee.Activity2;
 import fr.upec.e2ee.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -30,8 +27,8 @@ public class HomeFragment extends Fragment {
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        final Button buttonview = binding.button;
-        buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
+        //final Button buttonview = binding.button;
+        //buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
 
         return root;
     }
