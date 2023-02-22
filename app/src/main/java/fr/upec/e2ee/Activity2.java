@@ -1,6 +1,7 @@
 package fr.upec.e2ee;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,7 @@ public class Activity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity2);
         add = findViewById(R.id.add);
+        add.setBackgroundColor(Color.BLUE);
         layout = findViewById(R.id.container);
         buildDialog();
         add.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +60,7 @@ public class Activity2 extends AppCompatActivity {
 
         TextView nameView = view.findViewById(R.id.name);
         Button delete = view.findViewById((R.id.delete));
+        delete.setBackgroundColor(Color.RED);
         nameView.setText(name);
 
         delete.setOnClickListener(new View.OnClickListener() {

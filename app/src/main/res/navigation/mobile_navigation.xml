@@ -24,7 +24,7 @@
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_identity"
-        android:name="fr.upec.e2ee.ui.slideshow.SlideshowFragment"
+        android:name="fr.upec.e2ee.ui.identity.IdentityFragment"
         android:label="@string/menu_identity"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_identity" />
 </navigation>
