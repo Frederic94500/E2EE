@@ -1,6 +1,5 @@
 package fr.upec.e2ee;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -20,7 +19,8 @@ import fr.upec.e2ee.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button afficher = findViewById(R.id.afficher);
+
+    Button afficher_contact;// = findViewById(R.id.afficher);
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -51,7 +51,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        afficher.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Activity2.class)));
+        View fragmentView = findViewById(R.id.nav_host_fragment_content_main);
+        //View currentView = navController.getCurrentDestination().getView();
+        afficher_contact = fragmentView.findViewById(R.id.afficher);
+        /*if (afficher_contact == null) {
+            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+        }*/
+        //afficher_contact.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Activity2.class)));
+
     }
 
     @Override
