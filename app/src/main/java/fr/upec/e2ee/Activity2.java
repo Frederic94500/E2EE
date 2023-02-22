@@ -3,6 +3,7 @@ package fr.upec.e2ee;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,14 +17,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 public class Activity2 extends AppCompatActivity {
+    final String KEY_CARD_COUNT = "cardCount";
+    final String KEY_CARD_CONTENTS = "cardContents";
     Button add;
     AlertDialog dialog;
     LinearLayout layout;
     int cardCount = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("0");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity2);
         add = findViewById(R.id.add);
@@ -39,9 +42,24 @@ public class Activity2 extends AppCompatActivity {
         });
 
         if (savedInstanceState != null) {
-            cardCount = savedInstanceState.getInt("cardCount");
-            ArrayList<String> cardContents = savedInstanceState.getStringArrayList("cardContents");
+            cardCount = savedInstanceState.getInt(KEY_CARD_COUNT);
+            ArrayList<String> cardContents = savedInstanceState.getStringArrayList(KEY_CARD_CONTENTS);
 
+            for (String content : cardContents) {
+                addCard(content);
+            }
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        cardCount = savedInstanceState.getInt("cardCount");
+        ArrayList<String> cardContents = savedInstanceState.getStringArrayList("cardContents");
+        Log.d("Activity2", "onRestoreInstanceState: cardCount=" + cardCount);
+
+        if (cardContents != null) {
             for (String content : cardContents) {
                 addCard(content);
             }
@@ -87,7 +105,6 @@ public class Activity2 extends AppCompatActivity {
 
         layout.addView((view));
         cardCount++;
-
     }
 
     @Override
@@ -104,5 +121,28 @@ public class Activity2 extends AppCompatActivity {
             cardContents.add(cardTextView.getText().toString());
         }
         savedInstanceState.putStringArrayList("cardContents", cardContents);
+        Log.d("Activity2", "onSaveInstanceState: cardCount=" + cardCount);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Activity2", "onDestroy()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Restaurer l'état de l'activité
+        onRestoreInstanceState(new Bundle());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Sauvegarder l'état de l'activité lorsqu'elle est mise en pause
+        onSaveInstanceState(new Bundle());
+    }
+
 }
+
