@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
 import fr.upec.e2ee.Tools;
-import fr.upec.e2ee.protocol.Cipher;
 import fr.upec.e2ee.protocol.Conversation;
 
 /**
@@ -49,9 +48,9 @@ public class MyConversations {
         if (Tools.isFileExists(FILENAME)) {
             byte[] cipheredData = Tools.readFile(FILENAME);
             if (cipheredData.length != 0) {
-                byte[] rawData = Cipher.decipher(secretKey, cipheredData);
+                //byte[] rawData = Cipher.decipher(secretKey, cipheredData);
 
-                String[] rawConversations = new String(rawData).split(",");
+                String[] rawConversations = new String(cipheredData).split(",");
                 for (String rawConversation : rawConversations) {
                     String[] splitConversation = rawConversation.split(":");
                     myConversations.add(new Conversation(new String(Tools.toBytes(splitConversation[0])),
@@ -76,8 +75,9 @@ public class MyConversations {
                 .collect(Collectors.joining(","));
 
         if (myConversations.size() > 0) {
-            byte[] cipheredOutput = Cipher.cipher(secretKey, rawConversations.getBytes(StandardCharsets.UTF_8));
-            Tools.writeToFile(FILENAME, cipheredOutput);
+            /*byte[] cipheredOutput = Cipher.cipher(secretKey, rawConversations.getBytes(StandardCharsets.UTF_8));
+            Tools.writeToFile(FILENAME, cipheredOutput);*/
+            Tools.writeToFile(FILENAME, rawConversations.getBytes(StandardCharsets.UTF_8));
         } else {
             Tools.deleteFile(FILENAME);
             Tools.createFile(FILENAME);

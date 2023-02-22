@@ -15,7 +15,6 @@ import javax.crypto.AEADBadTagException;
 import javax.crypto.SecretKey;
 
 import fr.upec.e2ee.Tools;
-import fr.upec.e2ee.protocol.Cipher;
 import fr.upec.e2ee.protocol.Sign;
 
 /**
@@ -53,8 +52,9 @@ public class MyDirectory {
         if (Tools.isFileExists(FILENAME)) {
             byte[] cipheredData = Tools.readFile(FILENAME);
             if (cipheredData.length != 0) {
-                byte[] rawData = Cipher.decipher(secretKey, cipheredData);
-                String[] users = new String(rawData).split(",");
+                /*byte[] rawData = Cipher.decipher(secretKey, cipheredData);
+                String[] users = new String(rawData).split(",");*/
+                String[] users = new String(cipheredData).split(",");
 
                 for (String user : users) {
                     String[] userInfo = user.split(":");
@@ -76,8 +76,9 @@ public class MyDirectory {
                 .collect(Collectors.joining(","));
 
         if (directory.size() > 0) {
-            byte[] cipheredDirectory = Cipher.cipher(secretKey, output.getBytes(StandardCharsets.UTF_8));
-            Tools.writeToFile(FILENAME, cipheredDirectory);
+            /*byte[] cipheredDirectory = Cipher.cipher(secretKey, output.getBytes(StandardCharsets.UTF_8));
+            Tools.writeToFile(FILENAME, cipheredDirectory);*/
+            Tools.writeToFile(FILENAME, output.getBytes(StandardCharsets.UTF_8));
         } else {
             Tools.deleteFile(FILENAME);
             Tools.createFile(FILENAME);

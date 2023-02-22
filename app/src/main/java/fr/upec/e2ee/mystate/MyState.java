@@ -108,6 +108,10 @@ public class MyState {
         return load(hashedPassword, secretKey, DEFAULT_ALIAS);
     }
 
+    public static MyState load() throws GeneralSecurityException, IOException {
+        return load(Tools.hashPassword("???"), null, DEFAULT_ALIAS);
+    }
+
     /**
      * Verify if the digest of .MyKeyPair, .MyDirectory and .MyConversations is the same
      *
@@ -189,7 +193,8 @@ public class MyState {
      */
     public void save() throws IOException, GeneralSecurityException {
         byte[] salt = Tools.generateRandomBytes(32);
-        SecretKey secretKey = Tools.getSecretKeyPBKDF2(hashedPassword.toCharArray(), salt);
+        //SecretKey secretKey = Tools.getSecretKeyPBKDF2(hashedPassword.toCharArray(), salt);
+        SecretKey secretKey = null;
 
         myDirectory.saveFile(secretKey);
         myConversations.save(secretKey);
