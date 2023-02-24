@@ -170,7 +170,7 @@ public class MyState {
 
     /**
      * Save MyState in a file
-     * <pre>Contain digest .MyKeyPair, digest .MyDirectory, digest .MyConversations, Base64 myNonce</pre>
+     * <pre>Contain digest .MyDirectory, digest .MyConversations, Base64 myNonce</pre>
      *
      * @throws IOException              Throws IOException if there is an I/O exception
      * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception

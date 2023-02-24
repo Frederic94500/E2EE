@@ -21,7 +21,6 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.Scanner;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -216,24 +215,6 @@ public class Tools {
      */
     public static byte[] digest(byte[] input) throws NoSuchAlgorithmException {
         return MessageDigest.getInstance("SHA-512").digest(input);
-    }
-
-
-    /**
-     * Get user input using nextLine() method
-     *
-     * @param sentence Sentence for the input
-     * @return Return user input
-     */
-    public static String getInput(String sentence) {
-        System.out.print(sentence);
-        Scanner scanner = new Scanner(System.in);
-
-        String input = scanner.nextLine();
-        if (input.equals("0")) {
-            return "0";
-        }
-        return input;
     }
 
     /**
