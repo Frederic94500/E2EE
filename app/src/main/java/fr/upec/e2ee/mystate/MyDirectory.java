@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import javax.crypto.AEADBadTagException;
-import javax.crypto.SecretKey;
 
 import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.protocol.Sign;
@@ -27,17 +26,13 @@ public class MyDirectory {
     public final static String FILENAME = ".MyDirectory";
     private final HashMap<String, byte[]> directory;
 
-    public MyDirectory() {
-        this.directory = new HashMap<>();
-    }
-
     /**
      * Constructor MyDirectory
      *
      * @throws IOException Throws IOException if there is an I/O exception
      */
-    public MyDirectory(SecretKey secretKey) throws IOException, GeneralSecurityException {
-        this.directory = readFile(secretKey);
+    public MyDirectory() throws IOException, GeneralSecurityException {
+        this.directory = readFile();
     }
 
     /**
@@ -46,15 +41,14 @@ public class MyDirectory {
      * @return Return HashMap
      * @throws IOException Throws IOException if there is an I/O exception
      */
-    public HashMap<String, byte[]> readFile(SecretKey secretKey) throws IOException, GeneralSecurityException {
+    public HashMap<String, byte[]> readFile() throws IOException, GeneralSecurityException {
         HashMap<String, byte[]> map = new HashMap<>();
 
         if (Tools.isFileExists(FILENAME)) {
             byte[] cipheredData = Tools.readFile(FILENAME);
             if (cipheredData.length != 0) {
-                /*byte[] rawData = Cipher.decipher(secretKey, cipheredData);
-                String[] users = new String(rawData).split(",");*/
-                String[] users = new String(cipheredData).split(",");
+                byte[] rawData = Tools.readEncryptedFile(FILENAME);
+                String[] users = new String(rawData).split(",");
 
                 for (String user : users) {
                     String[] userInfo = user.split(":");
@@ -70,15 +64,13 @@ public class MyDirectory {
      *
      * @throws IOException Throws IOException if there is an I/O exception
      */
-    public void saveFile(SecretKey secretKey) throws IOException, GeneralSecurityException {
+    public void saveFile() throws IOException, GeneralSecurityException {
         String output = directory.entrySet().stream()
                 .map(user -> Tools.toBase64(user.getKey().getBytes(StandardCharsets.UTF_8)) + ":" + Tools.toBase64(user.getValue()))
                 .collect(Collectors.joining(","));
 
         if (directory.size() > 0) {
-            /*byte[] cipheredDirectory = Cipher.cipher(secretKey, output.getBytes(StandardCharsets.UTF_8));
-            Tools.writeToFile(FILENAME, cipheredDirectory);*/
-            Tools.writeToFile(FILENAME, output.getBytes(StandardCharsets.UTF_8));
+            Tools.writeEncryptFile(FILENAME, output.getBytes(StandardCharsets.UTF_8));
         } else {
             Tools.deleteFile(FILENAME);
             Tools.createFile(FILENAME);

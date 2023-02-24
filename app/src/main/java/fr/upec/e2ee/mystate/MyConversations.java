@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.crypto.SecretKey;
-
 import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.protocol.Conversation;
 
@@ -24,17 +22,13 @@ public class MyConversations {
     public static final String FILENAME = ".MyConversations";
     private final List<Conversation> myConversations;
 
-    public MyConversations() {
-        this.myConversations = new ArrayList<>();
-    }
-
     /**
      * Constructor for MyConversations
      *
      * @throws FileNotFoundException Throws FileNotFoundException if the file was not found
      */
-    public MyConversations(SecretKey secretKey) throws IOException, GeneralSecurityException {
-        this.myConversations = load(secretKey);
+    public MyConversations() throws IOException, GeneralSecurityException {
+        this.myConversations = load();
     }
 
     /**
@@ -43,14 +37,14 @@ public class MyConversations {
      * @return Return an ArrayList of SecretBuild
      * @throws FileNotFoundException Throws FileNotFoundException if the file was not found
      */
-    public List<Conversation> load(SecretKey secretKey) throws IOException, GeneralSecurityException {
+    public List<Conversation> load() throws IOException, GeneralSecurityException {
         ArrayList<Conversation> myConversations = new ArrayList<>();
         if (Tools.isFileExists(FILENAME)) {
             byte[] cipheredData = Tools.readFile(FILENAME);
             if (cipheredData.length != 0) {
-                //byte[] rawData = Cipher.decipher(secretKey, cipheredData);
+                byte[] rawData = Tools.readEncryptedFile(FILENAME);
 
-                String[] rawConversations = new String(cipheredData).split(",");
+                String[] rawConversations = new String(rawData).split(",");
                 for (String rawConversation : rawConversations) {
                     String[] splitConversation = rawConversation.split(":");
                     myConversations.add(new Conversation(new String(Tools.toBytes(splitConversation[0])),
@@ -67,7 +61,7 @@ public class MyConversations {
      *
      * @throws IOException Throws IOException if there is an I/O exception
      */
-    public void save(SecretKey secretKey) throws IOException, GeneralSecurityException {
+    public void save() throws IOException, GeneralSecurityException {
         String rawConversations = myConversations.stream()
                 .map(conversation -> Tools.toBase64(conversation.getName().getBytes(StandardCharsets.UTF_8)) + ":" +
                         Tools.toBase64(Tools.longToByteArray(conversation.getDate())) + ":" +
@@ -75,9 +69,7 @@ public class MyConversations {
                 .collect(Collectors.joining(","));
 
         if (myConversations.size() > 0) {
-            /*byte[] cipheredOutput = Cipher.cipher(secretKey, rawConversations.getBytes(StandardCharsets.UTF_8));
-            Tools.writeToFile(FILENAME, cipheredOutput);*/
-            Tools.writeToFile(FILENAME, rawConversations.getBytes(StandardCharsets.UTF_8));
+            Tools.writeEncryptFile(FILENAME, rawConversations.getBytes(StandardCharsets.UTF_8));
         } else {
             Tools.deleteFile(FILENAME);
             Tools.createFile(FILENAME);

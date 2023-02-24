@@ -3,6 +3,7 @@ package fr.upec.e2ee;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -20,8 +21,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
-
-import javax.crypto.SecretKey;
 
 import fr.upec.e2ee.mystate.MyConversations;
 import fr.upec.e2ee.mystate.MyDirectory;
@@ -41,9 +40,9 @@ public class MainTest {
     static private SecretBuild sbUser2;
 
     @BeforeClass
-    public static void setupClass() throws GeneralSecurityException {
-        user1 = new MyState(Tools.hashPassword("1234"), "fr.upec.e2ee.keypair.unittest1");
-        user2 = new MyState(Tools.hashPassword("1234"), "fr.upec.e2ee.keypair.unittest2");
+    public static void setupClass() throws GeneralSecurityException, IOException {
+        user1 = new MyState("fr.upec.e2ee.keypair.unittest1");
+        user2 = new MyState("fr.upec.e2ee.keypair.unittest2");
     }
 
     @AfterClass
@@ -151,12 +150,10 @@ public class MainTest {
 
     @Test
     public void testSaveAndLoadMyState() throws GeneralSecurityException, IOException {
-        String hashedPassword = Tools.hashPassword("1234");
         MyState myState = user1;
         myState.save();
 
-        SecretKey newSecretKey = Tools.loadSecretKey(hashedPassword);
-        MyState myStateFile = MyState.load(hashedPassword, newSecretKey, "fr.upec.e2ee.keypair.unittest1");
+        MyState myStateFile = MyState.load("fr.upec.e2ee.keypair.unittest1");
 
         assertArrayEquals(myState.getMyPublicKey().getEncoded(), myStateFile.getMyPublicKey().getEncoded());
         assertArrayEquals(myState.getMyPrivateKey().getEncoded(), myStateFile.getMyPrivateKey().getEncoded());
@@ -165,10 +162,6 @@ public class MainTest {
 
     @Test
     public void testMyDirectory() throws IOException, GeneralSecurityException {
-        String hashedPassword = Tools.hashPassword("1234");
-        //SecretKey secretKey = Tools.getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.generateRandomBytes(32), 1024);
-        SecretKey secretKey = null;
-
         MyDirectory myDirectory = new MyDirectory();
         assertEquals(0, myDirectory.sizeOfDirectory());
 
@@ -178,28 +171,25 @@ public class MainTest {
         myDirectory.addPerson("user2", user2.getMyPublicKey().getEncoded());
         assertEquals(2, myDirectory.sizeOfDirectory());
 
-        myDirectory.saveFile(secretKey);
-        MyDirectory myDirectoryFile = new MyDirectory(secretKey);
+        myDirectory.saveFile();
+        MyDirectory myDirectoryFile = new MyDirectory();
 
         assertTrue(myDirectory.isInDirectory(user1.getMyPublicKey().getEncoded()));
         assertTrue(myDirectoryFile.isInDirectory(myDirectory.getPerson("user2")));
 
         myDirectory.deletePerson("user2");
         assertEquals(1, myDirectory.sizeOfDirectory());
-        myDirectory.saveFile(secretKey);
+        myDirectory.saveFile();
 
-        MyDirectory myDirectoryFile2 = new MyDirectory(secretKey);
+        MyDirectory myDirectoryFile2 = new MyDirectory();
         assertEquals(1, myDirectoryFile2.sizeOfDirectory());
     }
 
     @Test
     public void testReplaceMyKeyPair() throws GeneralSecurityException, IOException {
-        String hashedPassword = Tools.hashPassword("1234");
-
         user1.save();
 
-        SecretKey secretKey = Tools.loadSecretKey(hashedPassword);
-        MyState myStateFile = MyState.load(hashedPassword, secretKey);
+        MyState myStateFile = MyState.load();
 
         user1.replaceMyKeyPair("fr.upec.e2ee.keypair.unittest1");
 
@@ -218,39 +208,32 @@ public class MainTest {
         assertThrows(IllegalArgumentException.class, () -> Tools.keyParser(wrongPubKey));
     }
 
-    /*@Test
-    public void testPBKDF2() throws GeneralSecurityException {
-        String test = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECdQQzt/cpVAylBBPo4qw6dwVU17vNy5ZQG9QJqUwZnnC4yMjdrFC0MIvPgGxA/p1yOLPbSXnQZKEak27u9OEZg==";
+    @Test
+    public void testReadWriteEncryptFile() throws GeneralSecurityException, IOException {
+        Tools.deleteFile(".UNITTEST");
 
-        byte[] salt = Tools.toBytes("cKpdYGz6EXp5QctsIOsmVSn7ewGwwx5fW8TdA7N+5Ho=");
-        SecretKey totoSecretKeyPBKDF2 = Tools.getSecretKeyPBKDF2("toto".toCharArray(), salt, 1000);
-        byte[] output = Cipher.cipher(totoSecretKeyPBKDF2, test.getBytes(StandardCharsets.UTF_8));
+        String filename = ".UNITTEST";
+        byte[] test = "1 Hour Here Is 7 Years on Earth".getBytes(StandardCharsets.UTF_8);
 
-        assertEquals("ViK7x2IDuqGu13hNAdjMRXaDmu0nSj93KPt1UvylebE=", Tools.toBase64(totoSecretKeyPBKDF2.getEncoded()));
-        assertEquals(test, new String(Cipher.decipher(totoSecretKeyPBKDF2, output)));
+        Tools.writeEncryptFile(filename, test);
 
+        byte[] output = Tools.readFile(filename);
+        assertNotEquals(new String(test), new String(output));
 
-        byte[] salt2 = Tools.generateRandomBytes(32);
-        SecretKey secretKeyPBKDF2 = Tools.getSecretKeyPBKDF2("1234".toCharArray(), salt2, Tools.PBKDF2_ITERATION);
-        byte[] output2 = Cipher.cipher(secretKeyPBKDF2, test.getBytes(StandardCharsets.UTF_8));
+        output = Tools.readEncryptedFile(filename);
+        assertArrayEquals(test, output);
 
-        assertEquals(test, new String(Cipher.decipher(secretKeyPBKDF2, output2)));
-        assertThrows(AEADBadTagException.class, () -> Cipher.decipher(totoSecretKeyPBKDF2, output2));
-    }*/
+        Tools.deleteFile(".UNITTEST");
+    }
 
     @Test
     public void testAll() throws GeneralSecurityException, IOException {
         //Create MyState
-        String hashedPassword = Tools.hashPassword("1234");
-        //SecretKey secretKey = Tools.getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.generateRandomBytes(32), 1024);
-        //MyState myStatePhone = MyState.load(hashedPassword, secretKey);
         MyState myStatePhone = MyState.load();
 
         myStatePhone.incrementMyNonce();
         myStatePhone.save();
 
-        //SecretKey newSecretKey = Tools.loadSecretKey(hashedPassword);
-        //MyState myStatePhoneFile = MyState.load(hashedPassword, newSecretKey);
         MyState myStatePhoneFile = MyState.load();
 
         assertArrayEquals(myStatePhone.getMyPublicKey().getEncoded(), myStatePhoneFile.getMyPublicKey().getEncoded());
