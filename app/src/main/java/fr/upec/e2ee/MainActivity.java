@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -15,18 +16,27 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 import fr.upec.e2ee.databinding.ActivityMainBinding;
+import fr.upec.e2ee.mystate.MyState;
 
 public class MainActivity extends AppCompatActivity {
-
-
     Button afficher_contact;// = findViewById(R.id.afficher);
+    private MyState myState;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            myState = MyState.load();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -51,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        View fragmentView = findViewById(R.id.nav_host_fragment_content_main);
+        /*View fragmentView = findViewById(R.id.nav_host_fragment_content_main);
         //View currentView = navController.getCurrentDestination().getView();
         afficher_contact = fragmentView.findViewById(R.id.afficher);
         /*if (afficher_contact == null) {
             System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
         }*/
-        //afficher_contact.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Activity2.class)));
+        //afficher_contact.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Activity2.class)));*/
 
     }
 
@@ -73,5 +83,27 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        try {
+            myState.save();
+        } catch (IOException | GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        try {
+            myState = MyState.load();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

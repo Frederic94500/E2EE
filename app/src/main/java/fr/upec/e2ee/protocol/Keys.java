@@ -3,6 +3,10 @@ package fr.upec.e2ee.protocol;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 
+import androidx.security.crypto.MasterKeys;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -35,5 +39,17 @@ public class Keys {
                 //.setUserAuthenticationValidityDurationSeconds(5 * 60) //Deactivated for test
                 .build(), Tools.generateSecureRandom());
         return keyPairGenerator.generateKeyPair();
+    }
+
+    /**
+     * Get main key alias
+     *
+     * @return Return alias
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     * @throws IOException              Throws IOException if there is an I/O exception
+     */
+    public static String getMainKeyAlias() throws GeneralSecurityException, IOException {
+        KeyGenParameterSpec keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC;
+        return MasterKeys.getOrCreate(keyGenParameterSpec);
     }
 }
