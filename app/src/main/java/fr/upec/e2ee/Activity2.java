@@ -144,5 +144,10 @@ public class Activity2 extends AppCompatActivity {
         onSaveInstanceState(new Bundle());
     }
 
+    public void onBackPressed() {
+        super.onBackPressed();
+        onSaveInstanceState(new Bundle());
+    }
+
 }
 

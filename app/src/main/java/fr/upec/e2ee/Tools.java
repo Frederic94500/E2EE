@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
@@ -49,6 +50,12 @@ public class Tools {
      */
     public static String toBase64(byte[] in) {
         return Base64.getEncoder().encodeToString(in);
+    }
+
+    public static String convertToString(PublicKey publicKey) {
+        byte[] publicKeyBytes = publicKey.getEncoded();
+        byte[] base64Bytes = Base64.getEncoder().encode(publicKeyBytes);
+        return new String(base64Bytes, StandardCharsets.UTF_8);
     }
 
     /**

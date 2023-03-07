@@ -18,27 +18,34 @@ import fr.upec.e2ee.databinding.FragmentIdentityBinding;
 import fr.upec.e2ee.mystate.MyState;
 
 public class IdentityFragment extends Fragment {
+    MyState mystate;
     private @NonNull FragmentIdentityBinding binding;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        MyState myState = null;
         try {
-            myState = MyState.load();
-        } catch (GeneralSecurityException | IOException e) {
+            mystate = MyState.load();
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         IdentityViewModel identityViewModel =
                 new ViewModelProvider(this).get(IdentityViewModel.class);
-
-        identityViewModel.setText(Tools.toBase64(myState.getMyPublicKey().getEncoded()));
 
         binding = FragmentIdentityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textIdentity;
         identityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final Button buttonview = binding.identity;
+        textView.setOnClickListener(view -> {
+
+            textView.setText(Tools.convertToString(mystate.getMyPublicKey()));
+        });
+
+
         return root;
     }
 

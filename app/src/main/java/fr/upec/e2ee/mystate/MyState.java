@@ -136,7 +136,7 @@ public class MyState {
     public MyConversations getMyConversations() {
         return myConversations;
     }
-
+    
     /**
      * Get MyDirectory
      *
