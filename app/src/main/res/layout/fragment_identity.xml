@@ -21,5 +21,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/share"
+        tools:layout_editor_absoluteX="154dp"
+        tools:layout_editor_absoluteY="466dp" />
+
+    <Button
+        android:id="@+id/copy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/copy"
+        tools:layout_editor_absoluteX="269dp"
+        tools:layout_editor_absoluteY="468dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
