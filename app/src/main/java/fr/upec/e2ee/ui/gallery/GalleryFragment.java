@@ -1,10 +1,12 @@
 package fr.upec.e2ee.ui.gallery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import fr.upec.e2ee.Activity2;
 import fr.upec.e2ee.R;
 import fr.upec.e2ee.databinding.FragmentGalleryBinding;
 import fr.upec.e2ee.mystate.MyState;
@@ -49,8 +52,9 @@ public class GalleryFragment extends Fragment {
         //final TextView textView = binding.textGallery;
         //galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        //final Button buttonview = binding.afficher;
-        //buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
+        final Button buttonAdd = binding.add;
+        final Button buttonDelete = binding.delete;
+        buttonAdd.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
         //buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Contacts.class)));
         l = root.findViewById(R.id.list);
         ArrayAdapter<String> arr;
