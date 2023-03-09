@@ -7,7 +7,14 @@
     <string name="menu_identity">Identité</string>
     <string name="menu_gallery">Contacts</string>
     <string name="menu_slideshow">A propos</string>
-    <string name="share">Partager</string>
+    <string name="id_share">Partager</string>
     <string name="nav_header_title">E2EE</string>
-    <string name="copy">Copier</string>
+    <string name="id_copy">Copier</string>
+    <string name="m1_share">Partager</string>
+    <string name="m1_copy">Copier</string>
+    <string name="m1_generate">Générer Message 1</string>
+    <string name="m1_paste">Coller</string>
+    <string name="m1_validate">Valider Message 1</string>
+    <string name="m1_textbehind">Autre Message 1</string>
+    <string name="m1_reset">Réinitialiser</string>
 </resources>

@@ -25,7 +25,7 @@
         android:id="@+id/share_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/share"
+        android:text="@string/id_share"
         tools:layout_editor_absoluteX="154dp"
         tools:layout_editor_absoluteY="466dp" />
 
@@ -33,7 +33,7 @@
         android:id="@+id/copy_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/copy"
+        android:text="@string/id_copy"
         tools:layout_editor_absoluteX="269dp"
         tools:layout_editor_absoluteY="468dp" />
 

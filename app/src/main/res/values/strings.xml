@@ -11,6 +11,13 @@
     <string name="menu_identity">Identity</string>
     <string name="menu_gallery">Contacts</string>
     <string name="menu_slideshow">About</string>
-    <string name="share">Share</string>
-    <string name="copy">Copy</string>
+    <string name="id_share">Share</string>
+    <string name="id_copy">Copy</string>
+    <string name="m1_share">Share</string>
+    <string name="m1_copy">Copy</string>
+    <string name="m1_generate">Generate Message 1</string>
+    <string name="m1_paste">Paste</string>
+    <string name="m1_validate">Validate Message 1</string>
+    <string name="m1_textbehind">Other Message 1</string>
+    <string name="m1_reset">Reset</string>
 </resources>

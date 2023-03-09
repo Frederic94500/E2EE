@@ -8,9 +8,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import fr.upec.e2ee.R;
 import fr.upec.e2ee.databinding.FragmentHomeBinding;
+import fr.upec.e2ee.ui.message1.Message1Fragment;
 
 public class HomeFragment extends Fragment {
 
@@ -27,8 +31,13 @@ public class HomeFragment extends Fragment {
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        //final Button buttonview = binding.button;
-        //buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
+        binding.fabStartConv.setOnClickListener(view -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        });
 
         return root;
     }
