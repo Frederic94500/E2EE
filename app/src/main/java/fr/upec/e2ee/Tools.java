@@ -2,7 +2,11 @@ package fr.upec.e2ee;
 
 import static java.util.Arrays.copyOfRange;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
 
 import androidx.security.crypto.EncryptedFile;
 
@@ -12,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
@@ -52,12 +55,6 @@ public class Tools {
         return Base64.getEncoder().encodeToString(in);
     }
 
-    public static String convertToString(PublicKey publicKey) {
-        byte[] publicKeyBytes = publicKey.getEncoded();
-        byte[] base64Bytes = Base64.getEncoder().encode(publicKeyBytes);
-        return new String(base64Bytes, StandardCharsets.UTF_8);
-    }
-
     /**
      * Decode String Base64 to bytes
      *
@@ -66,6 +63,16 @@ public class Tools {
      */
     public static byte[] toBytes(String in) {
         return Base64.getDecoder().decode(in);
+    }
+
+    /**
+     * Format key to PEM format
+     *
+     * @param input Input
+     * @return Return Input as PEM format
+     */
+    public static String toPEMFormat(byte[] input) {
+        return "-----BEGIN PUBLIC KEY-----" + toBase64(input) + "-----END PUBLIC KEY-----";
     }
 
     /**
@@ -314,5 +321,34 @@ public class Tools {
 
         inputStream.close();
         return byteArrayOutputStream.toByteArray();
+    }
+
+    /**
+     * Prepare a Share Intent to share text
+     *
+     * @param input Input
+     * @return Return a Share Intent
+     */
+    public static Intent shareIntent(String input) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, input);
+        sendIntent.setType("text/plain");
+
+        return Intent.createChooser(sendIntent, null);
+    }
+
+    /**
+     * Copy input to the clipboard
+     *
+     * @param label Label of the input
+     * @param input Input
+     */
+    public static void copyToClipboard(String label, String input) {
+        ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText(label, input);
+        clipboard.setPrimaryClip(clipData);
+
+        Toast.makeText(E2EE.getContext(), "Copied", Toast.LENGTH_SHORT).show();
     }
 }

@@ -52,13 +52,6 @@ public class IdentityFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            mystate = MyState.load();
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">E2EE</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_afficher">Afficher</string>
+    <string name="menu_home">Menu principale</string>
+    <string name="menu_identity">Identité</string>
+    <string name="menu_gallery">Contacts</string>
+    <string name="menu_slideshow">A propos</string>
+    <string name="share">Partager</string>
+    <string name="nav_header_title">E2EE</string>
+    <string name="copy">Copier</string>
+</resources>
