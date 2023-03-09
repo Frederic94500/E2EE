@@ -20,4 +20,11 @@
     <string name="m1_validate">Validate Message 1</string>
     <string name="m1_textbehind">Other Message 1</string>
     <string name="m1_reset">Reset</string>
+    <string name="m2_generate">Generate Message 2</string>
+    <string name="m2_share">Share</string>
+    <string name="m2_copy">Copy</string>
+    <string name="m2_paste">Paste</string>
+    <string name="m2_reset">Reset</string>
+    <string name="m2_validate">Validate Message 2</string>
+    <string name="m2_textbehind">Other Message 2</string>
 </resources>
