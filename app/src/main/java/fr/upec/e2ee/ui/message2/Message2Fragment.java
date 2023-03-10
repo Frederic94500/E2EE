@@ -13,16 +13,22 @@ import androidx.annotation.Nullable;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Executor;
 
 import fr.upec.e2ee.E2EE;
+import fr.upec.e2ee.R;
+import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.databinding.FragmentMessage2Binding;
 import fr.upec.e2ee.mystate.MyState;
 import fr.upec.e2ee.protocol.Communication;
+import fr.upec.e2ee.protocol.Conversation;
 import fr.upec.e2ee.protocol.SecretBuild;
+import fr.upec.e2ee.ui.home.HomeFragment;
 
 public class Message2Fragment extends Fragment {
     private MyState myState;
@@ -114,6 +120,53 @@ public class Message2Fragment extends Fragment {
         //Generate Message 2
         generateMessage2Button.setOnClickListener(view -> {
             biometricPrompt.authenticate(promptInfo);
+        });
+
+        //Reset Message 2
+        resetMessage2Button.setOnClickListener(view -> {
+            biometricPrompt.cancelAuthentication();
+            otherMessage2Text.setText("");
+
+            generateMessage2Button.setEnabled(true);
+            resetMessage2Button.setEnabled(false);
+            shareMessage2Button.setEnabled(false);
+            copyMessage2Button.setEnabled(false);
+            pasteMessage2Button.setEnabled(false);
+            otherMessage2Text.setEnabled(false);
+            validateMessage2Text.setEnabled(false);
+        });
+
+        //Share Message 2
+        shareMessage2Button.setOnClickListener(view -> startActivity(Tools.shareIntent((myMessage2))));
+
+        //Copy Message 2
+        copyMessage2Button.setOnClickListener(view -> Tools.copyToClipboard("Message2", myMessage2));
+
+        //Paste Message 2
+        pasteMessage2Button.setOnClickListener(view -> {
+            String paste = Tools.pasteFromClipboard();
+            otherMessage2Text.setText(paste);
+        });
+
+        //Validate Message 2
+        validateMessage2Text.setOnClickListener(view -> {
+            try {
+                Conversation conversation = Communication.handleMessage2(myState.getMyDirectory(), mySecretBuild, otherMessage2Text.getText().toString());
+                myState.addAConversation(conversation);
+                myState.save();
+
+                Toast.makeText(E2EE.getContext(), "Conversation created!", Toast.LENGTH_SHORT).show();
+                Fragment fragment = HomeFragment.newInstance();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            } catch (NoSuchElementException e) {
+                Toast.makeText(E2EE.getContext(), "Error! " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            } catch (GeneralSecurityException | IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         return root;

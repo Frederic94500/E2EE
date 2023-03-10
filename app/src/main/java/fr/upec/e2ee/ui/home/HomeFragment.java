@@ -20,6 +20,10 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =

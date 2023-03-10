@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
@@ -10,67 +11,82 @@
         android:id="@+id/generate_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="100dp"
         android:enabled="true"
         android:text="@string/m2_generate"
-        tools:layout_editor_absoluteX="149dp"
-        tools:layout_editor_absoluteY="104dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reset_m2_button"
+        app:layout_constraintVertical_bias="0.138" />
 
     <Button
         android:id="@+id/reset_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:enabled="false"
         android:text="@string/m2_reset"
-        tools:layout_editor_absoluteX="293dp"
-        tools:layout_editor_absoluteY="93dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/share_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="100dp"
         android:enabled="false"
         android:text="@string/m2_share"
-        tools:layout_editor_absoluteX="232dp"
-        tools:layout_editor_absoluteY="159dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generate_m2_button" />
 
     <Button
         android:id="@+id/copy_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="108dp"
         android:enabled="false"
         android:text="@string/m2_copy"
-        tools:layout_editor_absoluteX="63dp"
-        tools:layout_editor_absoluteY="164dp" />
+        app:layout_constraintBottom_toTopOf="@+id/other_m2_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generate_m2_button"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/paste_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="128dp"
         android:enabled="false"
         android:text="@string/m2_paste"
-        tools:layout_editor_absoluteX="269dp"
-        tools:layout_editor_absoluteY="538dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/other_m2_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="80dp"
         android:ems="10"
         android:enabled="false"
         android:hint="@string/m2_textbehind"
         android:inputType="textPersonName"
         android:text=""
-        tools:layout_editor_absoluteX="112dp"
-        tools:layout_editor_absoluteY="611dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/validate_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="108dp"
+        android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/m2_validate"
-        tools:layout_editor_absoluteX="167dp"
-        tools:layout_editor_absoluteY="668dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
