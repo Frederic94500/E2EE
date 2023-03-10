@@ -11,6 +11,8 @@
     <string name="menu_identity">Identity</string>
     <string name="menu_gallery">Contacts</string>
     <string name="menu_slideshow">About</string>
+    <string name="Username">username</string>
+    <string name="pubKey">pubKey</string>
     <string name="share">Share</string>
     <string name="copy">Copy</string>
 </resources>

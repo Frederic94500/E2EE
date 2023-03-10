@@ -1,15 +1,17 @@
 package fr.upec.e2ee.ui.gallery;
 
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,7 +20,6 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import fr.upec.e2ee.Activity2;
 import fr.upec.e2ee.R;
 import fr.upec.e2ee.databinding.FragmentGalleryBinding;
 import fr.upec.e2ee.mystate.MyState;
@@ -32,6 +33,9 @@ public class GalleryFragment extends Fragment {
             "UGC NET CS", "CS Subjects",
             "Web Technologies"};
     MyState mystate;
+    AlertDialog dialog;
+    private EditText username;
+    private EditText pubKey;
     private FragmentGalleryBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,7 +58,40 @@ public class GalleryFragment extends Fragment {
 
         final Button buttonAdd = binding.add;
         final Button buttonDelete = binding.delete;
-        buttonAdd.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.contacts_dialog, null);
+                username = view.findViewById(R.id.username);
+                pubKey = view.findViewById(R.id.pubKey);
+                builder.setView(view)
+                        .setTitle("Mon Dialog")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Récupérer les valeurs des EditText
+                                String text_username = username.getText().toString();
+                                String text_pubKey = pubKey.getText().toString();
+                                        
+                                // Faire quelque chose avec les valeurs récupérées
+                            }
+                        })
+                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Annuler le Dialog
+                                dialogInterface.cancel();
+                            }
+                        });
+                builder.create();
+                builder.show();
+                // Retourner le Dialog créé
+                // return builder.create();
+            }
+        });
+        //buttonAdd.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
         //buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Contacts.class)));
         l = root.findViewById(R.id.list);
         ArrayAdapter<String> arr;
@@ -89,4 +126,6 @@ public class GalleryFragment extends Fragment {
         ArrayList<String> list = new ArrayList<>(map.keySet());
         return list;
     }
+
+
 }
