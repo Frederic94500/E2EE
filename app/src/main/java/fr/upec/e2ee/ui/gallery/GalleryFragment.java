@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import fr.upec.e2ee.R;
+import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.databinding.FragmentGalleryBinding;
 import fr.upec.e2ee.mystate.MyState;
 
@@ -74,7 +75,7 @@ public class GalleryFragment extends Fragment {
                                 // Récupérer les valeurs des EditText
                                 String text_username = username.getText().toString();
                                 String text_pubKey = pubKey.getText().toString();
-                                        
+                                mystate.getMyDirectory().addPerson(text_username, Tools.toBytes(text_pubKey));
                                 // Faire quelque chose avec les valeurs récupérées
                             }
                         })
