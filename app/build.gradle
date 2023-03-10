@@ -40,6 +40,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
     implementation 'androidx.security:security-crypto:1.0.0'
+    implementation 'androidx.biometric:biometric:1.1.0'
     annotationProcessor 'androidx.databinding:databinding-compiler:7.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testCompileOnly 'junit:junit:4.13.2'

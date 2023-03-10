@@ -77,7 +77,6 @@ public class Communication {
     public static String createMessage2(PrivateKey myPrivateKey, SecretBuild mySecretBuild) throws GeneralSecurityException {
         byte[] message2Base64 = mySecretBuild.toBytesWithoutSymKey();
 
-        //Need to have an ID verification in Android
         byte[] signedMessage = Sign.sign(myPrivateKey, message2Base64);
         byte[] cipheredSignedMessage = Cipher.cipher(toSecretKey(mySecretBuild.getSymKey()), signedMessage);
 

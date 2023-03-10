@@ -1,5 +1,7 @@
 package fr.upec.e2ee.protocol;
 
+import android.os.Build;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -124,12 +126,24 @@ public class Sign {
                 throw new IOException("Invalid encoding for signature");
             }
 
-            BigInteger r = values[0].getPositiveBigInteger();
-            BigInteger s = values[1].getPositiveBigInteger();
+            byte[] rBytes;
+            byte[] sBytes;
 
-            // trim leading zeroes
-            byte[] rBytes = trimZeroes(r.toByteArray());
-            byte[] sBytes = trimZeroes(s.toByteArray());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                BigInteger r = values[0].getPositiveBigInteger();
+                BigInteger s = values[1].getPositiveBigInteger();
+                // trim leading zeroes
+                rBytes = trimZeroes(r.toByteArray());
+                sBytes = trimZeroes(s.toByteArray());
+            } else {
+                fr.upec.e2ee.protocol.math.BigInteger r = values[0].getPositiveBigInteger2();
+                fr.upec.e2ee.protocol.math.BigInteger s = values[0].getPositiveBigInteger2();
+                // trim leading zeroes
+                rBytes = trimZeroes(r.toByteArray());
+                sBytes = trimZeroes(s.toByteArray());
+            }
+
+
             int k = Math.max(rBytes.length, sBytes.length);
             // r and s each occupy half the array
             byte[] result = new byte[k << 1];
