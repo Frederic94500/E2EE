@@ -1,6 +1,7 @@
 package fr.upec.e2ee.ui.message2;
 
 import android.os.Bundle;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,10 @@ public class Message2Fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        TransitionInflater transitionInflater = TransitionInflater.from(requireContext());
+        setExitTransition(transitionInflater.inflateTransition(R.transition.fade));
+        setEnterTransition(transitionInflater.inflateTransition(R.transition.slide_right));
+
         try {
             myState = MyState.load();
         } catch (GeneralSecurityException | IOException e) {
@@ -89,7 +94,7 @@ public class Message2Fragment extends Fragment {
                 try {
                     myMessage2 = Communication.createMessage2(myState.getMyPrivateKey(), mySecretBuild);
                 } catch (GeneralSecurityException e) {
-                    throw new RuntimeException(e);
+                    Toast.makeText(E2EE.getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
                 }
 
                 generateMessage2Button.setEnabled(false);
@@ -99,6 +104,8 @@ public class Message2Fragment extends Fragment {
                 pasteMessage2Button.setEnabled(true);
                 otherMessage2Text.setEnabled(true);
                 validateMessage2Text.setEnabled(true);
+
+                otherMessage2Text.setText("");
 
                 Toast.makeText(E2EE.getContext(), "Message 2 generated!", Toast.LENGTH_SHORT).show();
 
@@ -165,7 +172,7 @@ public class Message2Fragment extends Fragment {
             } catch (NoSuchElementException e) {
                 Toast.makeText(E2EE.getContext(), "Error! " + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (GeneralSecurityException | IOException e) {
-                throw new RuntimeException(e);
+                Toast.makeText(E2EE.getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
             }
         });
 

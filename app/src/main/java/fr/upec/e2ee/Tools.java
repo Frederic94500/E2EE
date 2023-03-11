@@ -355,6 +355,7 @@ public class Tools {
     public static String pasteFromClipboard() {
         ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+        Toast.makeText(E2EE.getContext(), "Pasted", Toast.LENGTH_SHORT).show();
         return (String) item.getText();
     }
 }
