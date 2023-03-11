@@ -1,6 +1,7 @@
 package fr.upec.e2ee.ui.home;
 
 import android.os.Bundle;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,10 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
+
+        TransitionInflater transitionInflater = TransitionInflater.from(requireContext());
+        setExitTransition(transitionInflater.inflateTransition(R.transition.fade));
+        setEnterTransition(transitionInflater.inflateTransition(R.transition.slide_right));
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
