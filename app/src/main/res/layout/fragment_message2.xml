@@ -26,7 +26,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:enabled="false"
-        android:text="@string/m2_reset"
+        android:text="@string/reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="100dp"
         android:enabled="false"
-        android:text="@string/m2_share"
+        android:text="@string/share"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/generate_m2_button" />
 
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="108dp"
         android:enabled="false"
-        android:text="@string/m2_copy"
+        android:text="@string/copy"
         app:layout_constraintBottom_toTopOf="@+id/other_m2_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/generate_m2_button"
@@ -59,7 +59,7 @@
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="128dp"
         android:enabled="false"
-        android:text="@string/m2_paste"
+        android:text="@string/paste"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -79,9 +79,9 @@ public class Message1Fragment extends Fragment {
 
                 otherMessage1Text.setText("");
 
-                Toast.makeText(E2EE.getContext(), "Message 1 generated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.m1_generated, Toast.LENGTH_SHORT).show();
             } catch (GeneralSecurityException | IOException e) {
-                Toast.makeText(E2EE.getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -125,9 +125,9 @@ public class Message1Fragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             } catch (GeneralSecurityException e) {
-                Toast.makeText(E2EE.getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
             } catch (IllegalArgumentException e) {
-                Toast.makeText(E2EE.getContext(), "Error! " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(E2EE.getContext(), getResources().getText(R.string.err_msg).toString() + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 

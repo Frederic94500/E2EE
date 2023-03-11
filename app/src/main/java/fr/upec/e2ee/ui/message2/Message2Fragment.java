@@ -1,5 +1,6 @@
 package fr.upec.e2ee.ui.message2;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -85,7 +86,7 @@ public class Message2Fragment extends Fragment {
         biometricAuthCallback = new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                Toast.makeText(E2EE.getContext(), "Error on authentication!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.auth_error, Toast.LENGTH_SHORT).show();
                 super.onAuthenticationError(errorCode, errString);
             }
 
@@ -94,7 +95,7 @@ public class Message2Fragment extends Fragment {
                 try {
                     myMessage2 = Communication.createMessage2(myState.getMyPrivateKey(), mySecretBuild);
                 } catch (GeneralSecurityException e) {
-                    Toast.makeText(E2EE.getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
                 }
 
                 generateMessage2Button.setEnabled(false);
@@ -107,21 +108,23 @@ public class Message2Fragment extends Fragment {
 
                 otherMessage2Text.setText("");
 
-                Toast.makeText(E2EE.getContext(), "Message 2 generated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.m2_generated, Toast.LENGTH_SHORT).show();
 
                 super.onAuthenticationSucceeded(result);
             }
 
             @Override
             public void onAuthenticationFailed() {
-                Toast.makeText(E2EE.getContext(), "Authentication cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.auth_canceled, Toast.LENGTH_SHORT).show();
                 super.onAuthenticationFailed();
             }
         };
         biometricPrompt = new androidx.biometric.BiometricPrompt(this, executor, biometricAuthCallback);
+        Resources res = getResources();
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("E2EE Biometric for signing a message")
-                .setNegativeButtonText("Cancel")
+                .setTitle(res.getText(R.string.auth_title))
+                .setDescription(res.getText(R.string.auth_desc))
+                .setNegativeButtonText(res.getText(R.string.cancel))
                 .build();
 
         //Generate Message 2
@@ -162,7 +165,7 @@ public class Message2Fragment extends Fragment {
                 myState.addAConversation(conversation);
                 myState.save();
 
-                Toast.makeText(E2EE.getContext(), "Conversation created!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.conv_created, Toast.LENGTH_SHORT).show();
                 Fragment fragment = HomeFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
@@ -170,9 +173,9 @@ public class Message2Fragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
             } catch (NoSuchElementException e) {
-                Toast.makeText(E2EE.getContext(), "Error! " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), getResources().getText(R.string.err_msg).toString() + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (GeneralSecurityException | IOException e) {
-                Toast.makeText(E2EE.getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
             }
         });
 

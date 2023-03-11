@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="@string/m1_reset"
+        android:text="@string/reset"
         tools:layout_editor_absoluteX="252dp"
         tools:layout_editor_absoluteY="27dp" />
 
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="68dp"
         android:enabled="false"
-        android:text="@string/m1_share"
+        android:text="@string/share"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="68dp"
         android:enabled="false"
-        android:text="@string/m1_copy"
+        android:text="@string/copy"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:enabled="false"
-        android:text="@string/m1_paste"
+        android:text="@string/paste"
         app:layout_constraintBottom_toTopOf="@+id/other_m1_textzone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
