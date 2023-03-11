@@ -48,6 +48,15 @@ public class HomeFragment extends Fragment {
             fragmentTransaction.commit();
         });
 
+        //Loop for each conversation
+        /*FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction()
+                .add()
+                .detach(this)
+                .attach()
+                .addToBackStack(null)
+                .commit();*/
+
         return root;
     }
 
