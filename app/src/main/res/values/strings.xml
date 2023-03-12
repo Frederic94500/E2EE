@@ -33,4 +33,5 @@
     <string name="err_ex_size">"The other Message 1 is not the expected size!"</string>
     <string name="err_unk_send">"Unknown sender!"</string>
     <string name="conv_deleted">Conversation deleted!</string>
+    <string name="empty_conv">No conversations! Please create a new conversation</string>
 </resources>

@@ -112,4 +112,13 @@ public class MyConversations {
     public void deleteConversation(Conversation conversation) {
         myConversations.remove(conversation);
     }
+
+    /**
+     * Get all conversations
+     *
+     * @return Return Conversations
+     */
+    public List<Conversation> getMyConversations() {
+        return myConversations;
+    }
 }

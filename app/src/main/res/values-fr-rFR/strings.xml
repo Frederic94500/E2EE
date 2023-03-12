@@ -33,4 +33,5 @@
     <string name="err_ex_size">L\'autre Message 1 n\'a pas la taille exceptée!</string>
     <string name="err_unk_send">Emetteur inconnu!</string>
     <string name="conv_deleted">Conversation supprimée!</string>
+    <string name="empty_conv">Aucun conversation! Veuillez une nouvelle conversation</string>
 </resources>
