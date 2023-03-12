@@ -174,7 +174,7 @@ public class Message2Fragment extends Fragment {
                         .commit();
             } catch (NoSuchElementException e) {
                 Toast.makeText(E2EE.getContext(), getResources().getText(R.string.err_msg).toString() + e.getMessage(), Toast.LENGTH_SHORT).show();
-            } catch (GeneralSecurityException | IOException e) {
+            } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
                 Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
             }
         });
