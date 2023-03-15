@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,13 +29,14 @@ import fr.upec.e2ee.mystate.MyState;
 
 public class GalleryFragment extends Fragment {
     ListView l;
+
     String tutorials[]
             = {"Algorithms", "Data Structures",
             "Languages", "Interview Corner",
             "GATE", "ISRO CS",
             "UGC NET CS", "CS Subjects",
             "Web Technologies"};
-    MyState mystate;
+    MyState myState;
     AlertDialog dialog;
     private EditText username;
     private EditText pubKey;
@@ -44,7 +47,7 @@ public class GalleryFragment extends Fragment {
         GalleryViewModel galleryViewModel =
                 new ViewModelProvider(this).get(GalleryViewModel.class);
         try {
-            mystate = MyState.load();
+            myState = MyState.load();
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -56,12 +59,15 @@ public class GalleryFragment extends Fragment {
         //final TextView textView = binding.textGallery;
         //final TextView textView = binding.textGallery;
         //galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
+        final TextView textDirectory = binding.testDirectory;
         final Button buttonAdd = binding.add;
         final Button buttonDelete = binding.delete;
+        String random = myState.getMyDirectory().getSize() + "";
+        textDirectory.setText(random);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // raffraichir la view;;;;;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View view = inflater.inflate(R.layout.contacts_dialog, null);
@@ -72,11 +78,32 @@ public class GalleryFragment extends Fragment {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                // Récupérer les valeurs des EditText
-                                String text_username = username.getText().toString();
-                                String text_pubKey = pubKey.getText().toString();
-                                mystate.getMyDirectory().addPerson(text_username, Tools.toBytes(text_pubKey));
-                                // Faire quelque chose avec les valeurs récupérées
+                                String textUsername = username.getText().toString();
+                                String textPubKey = pubKey.getText().toString();
+                                if (textUsername.isEmpty() || textPubKey.isEmpty()) {
+                                    Toast.makeText(getActivity(), "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
+                                    // Ne pas fermer le dialogue
+                                    return;
+                                } else {
+                                    if (Tools.isECPubKey(Tools.toBytes(textPubKey))) {
+                                        myState.getMyDirectory().addPerson(textUsername, Tools.toBytes(textPubKey));
+                                        String random2 = myState.getMyDirectory().getSize() + "";
+                                        textDirectory.setText(random2);
+                                        try {
+                                            myState.save();
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        } catch (GeneralSecurityException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    } else {
+                                        Toast.makeText(getActivity(), "Erreur clé public invalide", Toast.LENGTH_SHORT).show();
+                                        return;
+
+                                    }
+
+                                }
+
                             }
                         })
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -91,20 +118,24 @@ public class GalleryFragment extends Fragment {
                 // Retourner le Dialog créé
                 // return builder.create();
             }
+
         });
         //buttonAdd.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
         //buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Contacts.class)));
+        System.out.println("debug readfile to display directory in a listview ");
         l = root.findViewById(R.id.list);
         ArrayAdapter<String> arr;
 
+        //arr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, contacts);
         try {
-            arr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, convertHashMapToList(mystate.getMyDirectory().readFile()));
+
+
+            arr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, convertHashMapToList(myState.getMyDirectory().readFile()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
-
         l.setAdapter(arr);
         return root;
 
@@ -114,7 +145,7 @@ public class GalleryFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            mystate = MyState.load();
+            myState.save();
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -124,7 +155,10 @@ public class GalleryFragment extends Fragment {
     }
 
     public ArrayList<String> convertHashMapToList(HashMap<String, byte[]> map) {
+        System.out.println("debug converthashmap  to display contacts");
+        System.out.println(">>>" + map.keySet() + "map keyset                                   map keyset ");
         ArrayList<String> list = new ArrayList<>(map.keySet());
+        System.out.println(list);
         return list;
     }
 
