@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.databinding.FragmentIdentityBinding;
 import fr.upec.e2ee.mystate.MyState;
 
@@ -41,7 +42,7 @@ public class IdentityFragment extends Fragment {
         //final Button buttonview = binding.identity;
         textView.setOnClickListener(view -> {
 
-            //textView.setText(Tools.convertToString(mystate.getMyPublicKey()));
+            textView.setText(Tools.toBase64(mystate.getMyPublicKey().getEncoded()));
         });
 
 

@@ -68,7 +68,7 @@ public class GalleryFragment extends Fragment {
                 username = view.findViewById(R.id.username);
                 pubKey = view.findViewById(R.id.pubKey);
                 builder.setView(view)
-                        .setTitle("Mon Dialog")
+                        .setTitle("Add Contacts")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

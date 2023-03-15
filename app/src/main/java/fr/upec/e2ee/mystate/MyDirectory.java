@@ -109,6 +109,8 @@ public class MyDirectory {
      * @param pubKey Public Key of the person
      */
     public void addPerson(String name, byte[] pubKey) {
+
+        System.out.println("debuggggggggggggggggggggggggggggggggg add person");
         directory.put(name, pubKey);
     }
 
