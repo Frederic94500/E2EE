@@ -32,5 +32,5 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
         android:hint="@string/pubKey"
-        android:inputType="textPassword" />
+        android:inputType="text" />
 </LinearLayout>
