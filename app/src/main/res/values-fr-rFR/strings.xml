@@ -34,4 +34,6 @@
     <string name="err_unk_send">Emetteur inconnu!</string>
     <string name="conv_deleted">Conversation supprimée!</string>
     <string name="empty_conv">Aucune conversation! Veuillez créer une nouvelle conversation</string>
+    <string name="conv_empty_message">Message vide!</string>
+    <string name="message">Message</string>
 </resources>

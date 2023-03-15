@@ -5,6 +5,7 @@ import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import fr.upec.e2ee.databinding.FragmentConversationBinding;
 import fr.upec.e2ee.mystate.MyState;
 import fr.upec.e2ee.protocol.Cipher;
 import fr.upec.e2ee.protocol.Conversation;
+import fr.upec.e2ee.ui.home.HomeFragment;
 
 public class ConversationFragment extends Fragment {
     private MyState myState;
@@ -65,47 +67,87 @@ public class ConversationFragment extends Fragment {
         final EditText messageTextZone = binding.message;
 
         //Copy
-        copyButton.setOnClickListener(view -> Tools.copyToClipboard("Message", messageTextZone.getText().toString()));
+        copyButton.setOnClickListener(view -> {
+            if (!messageTextZone.getText().toString().isEmpty()) {
+                Tools.copyToClipboard("Message", messageTextZone.getText().toString());
+            } else {
+                messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
+            }
+        });
 
         //Paste
         pasteButton.setOnClickListener(view -> {
-            String message = Tools.pasteFromClipboard();
-            messageTextZone.setText(message);
+            if (!messageTextZone.getText().toString().isEmpty()) {
+                String message = Tools.pasteFromClipboard();
+                messageTextZone.setText(message);
+            } else {
+                messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
+            }
         });
 
         //Cipher
         cipherButton.setOnClickListener(view -> {
-            try {
-                String cipheredMessage = Tools.toBase64(Cipher.cipher(Tools.toSecretKey(conversation.getSecretKey()), messageTextZone.getText().toString().getBytes(StandardCharsets.UTF_8)));
-                messageTextZone.setText(cipheredMessage);
-            } catch (GeneralSecurityException e) {
-                Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+            if (!messageTextZone.getText().toString().isEmpty()) {
+                try {
+                    String cipheredMessage = Tools.toBase64(Cipher.cipher(Tools.toSecretKey(conversation.getSecretKey()), messageTextZone.getText().toString().getBytes(StandardCharsets.UTF_8)));
+                    messageTextZone.setText(cipheredMessage);
+                } catch (GeneralSecurityException e) {
+                    Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
             }
         });
 
         //Decipher
         decipherButton.setOnClickListener(view -> {
-            try {
-                String decipheredMessage = Tools.toBase64(Cipher.decipher(Tools.toSecretKey(conversation.getSecretKey()), messageTextZone.getText().toString().getBytes(StandardCharsets.UTF_8)));
-                messageTextZone.setText(decipheredMessage);
-            } catch (GeneralSecurityException e) {
-                Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+            if (!messageTextZone.getText().toString().isEmpty()) {
+                try {
+                    String decipheredMessage = new String(Cipher.decipher(Tools.toSecretKey(conversation.getSecretKey()), Tools.toBytes(messageTextZone.getText().toString())));
+                    messageTextZone.setText(decipheredMessage);
+                } catch (GeneralSecurityException e) {
+                    Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
             }
         });
 
         //Share
-        shareButton.setOnClickListener(view -> Tools.shareIntent(messageTextZone.getText().toString()));
+        shareButton.setOnClickListener(view -> {
+            if (!messageTextZone.getText().toString().isEmpty()) {
+                Tools.shareIntent(messageTextZone.getText().toString());
+            } else {
+                messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
+            }
+        });
 
         //Delete
         deleteButton.setOnClickListener(view -> {
             myState.getMyConversations().deleteConversation(conversation);
             Toast.makeText(E2EE.getContext(), R.string.conv_deleted, Toast.LENGTH_SHORT).show();
 
-            FragmentManager fragmentManager = getParentFragmentManager();
+            try {
+                myState.save();
+            } catch (IOException | GeneralSecurityException e) {
+                throw new RuntimeException(e);
+            }
+
+            /*FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .remove(this)
                     .addToBackStack(null)
-                    .commit();
+                    .commit();*/
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            if (getView().getParent() instanceof AdapterView) {
+                getActivity().onBackPressed();
+            } else {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, HomeFragment.newInstance())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         return root;

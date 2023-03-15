@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -64,18 +65,17 @@ public class HomeFragment extends Fragment {
             textView.setVisibility(View.GONE);
         }
 
-        String test = myState.getMyDirectory().sizeOfDirectory() + "";
-        textView.setText(test);
-
+        ListAdapter listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyConversations().nameConversations());
         listView.setClickable(true);
-        listView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.conv_card_list, myState.getMyConversations().getMyConversations()));
+        listView.setAdapter(listAdapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
+            binding.fabStartConv.setVisibility(View.GONE);
             ConversationFragment conversationFragment = ConversationFragment.newInstance();
             Bundle bundle = new Bundle();
             bundle.putInt("Conv", position);
             conversationFragment.setArguments(bundle);
 
-            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment_content_main, conversationFragment)
                     .addToBackStack(null)
@@ -103,5 +103,29 @@ public class HomeFragment extends Fragment {
             throw new RuntimeException(e);
         }
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            myState = MyState.load();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ListView listView = binding.homeConvList;
+        TextView textView = binding.emptyConv;
+        if (myState.getMyConversations().getSize() == 0) {
+            listView.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.GONE);
+        }
+
+        ListAdapter listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyConversations().nameConversations());
+        listView.setClickable(true);
+        listView.setAdapter(listAdapter);
     }
 }

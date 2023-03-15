@@ -121,4 +121,12 @@ public class MyConversations {
     public List<Conversation> getMyConversations() {
         return myConversations;
     }
+
+    public ArrayList<String> nameConversations() {
+        ArrayList<String> temp = new ArrayList<>();
+        for (Conversation c : myConversations) {
+            temp.add(c.getName());
+        }
+        return temp;
+    }
 }
