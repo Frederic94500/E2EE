@@ -64,8 +64,11 @@ public class HomeFragment extends Fragment {
             textView.setVisibility(View.GONE);
         }
 
+        String test = myState.getMyDirectory().sizeOfDirectory() + "";
+        textView.setText(test);
+
         listView.setClickable(true);
-        listView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.fragment_home, myState.getMyConversations().getMyConversations()));
+        listView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.conv_card_list, myState.getMyConversations().getMyConversations()));
         listView.setOnItemClickListener((parent, view, position, id) -> {
             ConversationFragment conversationFragment = ConversationFragment.newInstance();
             Bundle bundle = new Bundle();
