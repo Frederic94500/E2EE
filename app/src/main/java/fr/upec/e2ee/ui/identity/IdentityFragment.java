@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,7 +26,10 @@ public class IdentityFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         try {
             mystate = MyState.load();
-        } catch (GeneralSecurityException | IOException e) {
+            mystate.save();
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         IdentityViewModel identityViewModel =
@@ -36,20 +38,14 @@ public class IdentityFragment extends Fragment {
         binding = FragmentIdentityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //Show Public Key
         final TextView textView = binding.textIdentity;
         identityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final Button buttonview = binding.identity;
         textView.setOnClickListener(view -> {
+
             textView.setText(Tools.toBase64(mystate.getMyPublicKey().getEncoded()));
         });
 
-        //Share button
-        final Button shareButton = binding.shareButton;
-        shareButton.setOnClickListener(view -> startActivity(Tools.shareIntent(Tools.toPEMFormat(mystate.getMyPublicKey().getEncoded()))));
-
-        //Copy button
-        final Button copyButton = binding.copyButton;
-        copyButton.setOnClickListener(view -> Tools.copyToClipboard("PubKey", Tools.toPEMFormat(mystate.getMyPublicKey().getEncoded())));
 
         return root;
     }
@@ -58,10 +54,15 @@ public class IdentityFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         try {
+            mystate = MyState.load();
             mystate.save();
-        } catch (IOException | GeneralSecurityException e) {
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
         binding = null;
     }
+
+
 }

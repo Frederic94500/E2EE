@@ -44,6 +44,7 @@ public class MyDirectory {
      * @throws IOException Throws IOException if there is an I/O exception
      */
     public HashMap<String, byte[]> readFile() throws IOException, GeneralSecurityException {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!o!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         HashMap<String, byte[]> map = new HashMap<>();
 
         if (Tools.isFileExists(FILENAME)) {
@@ -111,6 +112,11 @@ public class MyDirectory {
      * @param pubKey Public Key of the person
      */
     public void addPerson(String name, byte[] pubKey) {
+
+        System.out.println("debug directory ------------------- add person");
+        System.out.println(name);
+        System.out.println("entre name ------------------- et pubkey dans  add person");
+        System.out.println(pubKey + "-------------------------------------------------------------------------------");
         directory.put(name, pubKey);
     }
 
@@ -191,5 +197,10 @@ public class MyDirectory {
             }
         }
         throw new NoSuchElementException(E2EE.getContext().getResources().getText(R.string.err_unk_send).toString());
+    }
+
+    public int getSize() {
+
+        return directory.size();
     }
 }
