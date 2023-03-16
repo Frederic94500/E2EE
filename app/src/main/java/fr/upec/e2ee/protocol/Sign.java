@@ -137,7 +137,7 @@ public class Sign {
                 sBytes = trimZeroes(s.toByteArray());
             } else {
                 fr.upec.e2ee.protocol.math.BigInteger r = values[0].getPositiveBigInteger2();
-                fr.upec.e2ee.protocol.math.BigInteger s = values[0].getPositiveBigInteger2();
+                fr.upec.e2ee.protocol.math.BigInteger s = values[1].getPositiveBigInteger2();
                 // trim leading zeroes
                 rBytes = trimZeroes(r.toByteArray());
                 sBytes = trimZeroes(s.toByteArray());
