@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import androidx.security.crypto.EncryptedFile;
 
@@ -348,7 +347,11 @@ public class Tools {
         ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newPlainText(label, input);
         clipboard.setPrimaryClip(clipData);
+    }
 
-        Toast.makeText(E2EE.getContext(), "Copied", Toast.LENGTH_SHORT).show();
+    public static String pasteFromClipboard() {
+        ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+        return (String) item.getText();
     }
 }

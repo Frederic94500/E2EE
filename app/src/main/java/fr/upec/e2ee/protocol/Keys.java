@@ -35,8 +35,8 @@ public class Keys {
                 KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
                 .setDigests(KeyProperties.DIGEST_SHA512)
                 .setAlgorithmParameterSpec(new ECGenParameterSpec("secp256r1"))
-                //.setUserAuthenticationRequired(true) //Deactivated for test
-                //.setUserAuthenticationValidityDurationSeconds(5 * 60) //Deactivated for test
+                .setUserAuthenticationRequired(true) //Deactivated for test
+                .setUserAuthenticationValidityDurationSeconds(3 * 60) //Deactivated for test
                 .build(), Tools.generateSecureRandom());
         return keyPairGenerator.generateKeyPair();
     }

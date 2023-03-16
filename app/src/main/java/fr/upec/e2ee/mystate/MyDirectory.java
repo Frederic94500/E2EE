@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import javax.crypto.AEADBadTagException;
 
+import fr.upec.e2ee.E2EE;
+import fr.upec.e2ee.R;
 import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.protocol.Sign;
 
@@ -194,7 +196,7 @@ public class MyDirectory {
             } catch (AEADBadTagException | SignatureException ignored) {
             }
         }
-        throw new NoSuchElementException("Unknown sender!");
+        throw new NoSuchElementException(E2EE.getContext().getResources().getText(R.string.err_unk_send).toString());
     }
 
     public int getSize() {

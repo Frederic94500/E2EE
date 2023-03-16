@@ -25,6 +25,8 @@
 
 package fr.upec.e2ee.protocol.Der;
 
+import android.os.Build;
+
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -277,6 +279,10 @@ public class DerValue {
         return getBigIntegerInternal(tag_Integer, true);
     }
 
+    public fr.upec.e2ee.protocol.math.BigInteger getPositiveBigInteger2() throws IOException {
+        return getBigIntegerInternal2(tag_Integer, true);
+    }
+
     /**
      * Returns a BigInteger value
      *
@@ -295,9 +301,28 @@ public class DerValue {
         if (!allowBER && (end - start >= 2 && (buffer[start] == 0) && (buffer[start + 1] >= 0))) {
             throw new IOException("Invalid encoding: redundant leading 0s");
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return makePositive
+                    ? new BigInteger(1, buffer, start, end - start)
+                    : new BigInteger(buffer, start, end - start);
+        }
+        throw new IllegalStateException("Unexpected state!");
+    }
+
+    private fr.upec.e2ee.protocol.math.BigInteger getBigIntegerInternal2(byte expectedTag, boolean makePositive) throws IOException {
+        if (tag != expectedTag) {
+            throw new IOException("DerValue.getBigIntegerInternal, not expected " + tag);
+        }
+        if (end == start) {
+            throw new IOException("Invalid encoding: zero length Int value");
+        }
+        data.pos = data.end; // Compatibility. Reach end.
+        if (!allowBER && (end - start >= 2 && (buffer[start] == 0) && (buffer[start + 1] >= 0))) {
+            throw new IOException("Invalid encoding: redundant leading 0s");
+        }
         return makePositive
-                ? new BigInteger(1, buffer, start, end - start)
-                : new BigInteger(buffer, start, end - start);
+                ? new fr.upec.e2ee.protocol.math.BigInteger(1, buffer, start, end - start)
+                : new fr.upec.e2ee.protocol.math.BigInteger(buffer, start, end - start);
     }
 
     /**
