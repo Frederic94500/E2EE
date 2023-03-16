@@ -139,15 +139,11 @@ public class ConversationFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();*/
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            if (getView().getParent() instanceof AdapterView) {
-                getActivity().onBackPressed();
-            } else {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, HomeFragment.newInstance())
-                        .addToBackStack(null)
-                        .commit();
-            }
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                .remove(this)
+                .addToBackStack(null)
+                .commit();
         });
 
         return root;

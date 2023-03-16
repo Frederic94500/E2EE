@@ -26,6 +26,8 @@ import fr.upec.e2ee.ui.message1.Message1Fragment;
 
 public class HomeFragment extends Fragment {
     private MyState myState;
+    ListView listView;
+    ListAdapter listAdapter;
     private FragmentHomeBinding binding;
 
     public static HomeFragment newInstance() {
@@ -47,40 +49,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.fabStartConv.setOnClickListener(view -> {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        });
-
-        ListView listView = binding.homeConvList;
-        TextView textView = binding.emptyConv;
-        if (myState.getMyConversations().getSize() == 0) {
-            listView.setVisibility(View.GONE);
-            textView.setVisibility(View.VISIBLE);
-        } else {
-            listView.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.GONE);
-        }
-
-        ListAdapter listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyConversations().nameConversations());
-        listView.setClickable(true);
-        listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            binding.fabStartConv.setVisibility(View.GONE);
-            ConversationFragment conversationFragment = ConversationFragment.newInstance();
-            Bundle bundle = new Bundle();
-            bundle.putInt("Conv", position);
-            conversationFragment.setArguments(bundle);
-
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, conversationFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+        generateFragment();
 
         //Loop for each conversation
         /*FragmentManager fragmentManager = getParentFragmentManager();
@@ -102,6 +71,8 @@ public class HomeFragment extends Fragment {
         } catch (IOException | GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
+
+        listView.setAdapter(null);
         binding = null;
     }
 
@@ -114,7 +85,33 @@ public class HomeFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
-        ListView listView = binding.homeConvList;
+        generateFragment();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        try {
+            myState.save();
+        } catch (IOException | GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+
+        listView.setAdapter(null);
+        binding = null;
+    }
+
+    private void generateFragment() {
+        binding.fabStartConv.setOnClickListener(view -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        });
+
+        listView = binding.homeConvList;
         TextView textView = binding.emptyConv;
         if (myState.getMyConversations().getSize() == 0) {
             listView.setVisibility(View.GONE);
@@ -124,8 +121,21 @@ public class HomeFragment extends Fragment {
             textView.setVisibility(View.GONE);
         }
 
-        ListAdapter listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyConversations().nameConversations());
+        listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyConversations().nameConversations());
         listView.setClickable(true);
         listView.setAdapter(listAdapter);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            binding.fabStartConv.setVisibility(View.GONE);
+            ConversationFragment conversationFragment = ConversationFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putInt("Conv", position);
+            conversationFragment.setArguments(bundle);
+
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, conversationFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 }
