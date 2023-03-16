@@ -36,4 +36,5 @@
     <string name="empty_conv">No conversations! Please create a new conversation</string>
     <string name="conv_empty_message">Empty message!</string>
     <string name="message">Message</string>
+    <string name="err_msg_wrong">Error on decipher!</string>
 </resources>

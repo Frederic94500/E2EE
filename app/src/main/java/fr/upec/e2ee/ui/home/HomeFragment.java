@@ -25,9 +25,9 @@ import fr.upec.e2ee.ui.conversation.ConversationFragment;
 import fr.upec.e2ee.ui.message1.Message1Fragment;
 
 public class HomeFragment extends Fragment {
-    private MyState myState;
     ListView listView;
     ListAdapter listAdapter;
+    private MyState myState;
     private FragmentHomeBinding binding;
 
     public static HomeFragment newInstance() {
@@ -50,15 +50,6 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         generateFragment();
-
-        //Loop for each conversation
-        /*FragmentManager fragmentManager = getParentFragmentManager();
-        fragmentManager.beginTransaction()
-                .add()
-                .detach(this)
-                .attach()
-                .addToBackStack(null)
-                .commit();*/
 
         return root;
     }
@@ -131,10 +122,10 @@ public class HomeFragment extends Fragment {
             bundle.putInt("Conv", position);
             conversationFragment.setArguments(bundle);
 
-            FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, conversationFragment)
-                    .addToBackStack(null)
+            FragmentManager homeFragment = getParentFragmentManager();
+            homeFragment.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, conversationFragment, "childConv")
+                    .addToBackStack("home")
                     .commit();
         });
     }

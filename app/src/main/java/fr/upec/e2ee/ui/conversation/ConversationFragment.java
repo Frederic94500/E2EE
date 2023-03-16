@@ -5,7 +5,6 @@ import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -26,7 +25,6 @@ import fr.upec.e2ee.databinding.FragmentConversationBinding;
 import fr.upec.e2ee.mystate.MyState;
 import fr.upec.e2ee.protocol.Cipher;
 import fr.upec.e2ee.protocol.Conversation;
-import fr.upec.e2ee.ui.home.HomeFragment;
 
 public class ConversationFragment extends Fragment {
     private MyState myState;
@@ -107,6 +105,8 @@ public class ConversationFragment extends Fragment {
                     messageTextZone.setText(decipheredMessage);
                 } catch (GeneralSecurityException e) {
                     Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(E2EE.getContext(), R.string.err_msg_wrong, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
@@ -139,11 +139,17 @@ public class ConversationFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();*/
 
-            FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.beginTransaction()
-                .remove(this)
-                .addToBackStack(null)
-                .commit();
+            /*FragmentManager manager = getParentFragmentManager();
+            manager.beginTransaction()
+                    .remove(this)
+                    .addToBackStack(null)
+                    .commit();*/
+
+            FragmentManager parentFragmentManager = getParentFragmentManager();
+            parentFragmentManager.beginTransaction()
+                    .remove(this)
+                    .addToBackStack("home")
+                    .commit();
         });
 
         return root;
@@ -152,11 +158,6 @@ public class ConversationFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        try {
-            myState.save();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }
