@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -137,6 +138,40 @@ public class GalleryFragment extends Fragment {
             throw new RuntimeException(e);
         }
         l.setAdapter(arr);
+        l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedContact = (String) parent.getItemAtPosition(position);
+                byte[] publicKey = myState.getMyDirectory().getPerson(selectedContact);
+                String publicKeyString = Tools.toBase64(publicKey);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Public Key:\n\n" + publicKeyString)
+                        .setTitle("Contact Information")
+                        .setPositiveButton("OK", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        l.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // Récupérer l'élément sélectionné
+                String selected = (String) parent.getItemAtPosition(position);
+
+                // Supprimer l'élément de la liste et de l'ArrayAdapter
+                arr.remove(selected);
+                myState.getMyDirectory().deletePerson(selected);
+
+                // Mettre à jour la ListView
+                arr.notifyDataSetChanged();
+
+                // Afficher un message pour confirmer la suppression
+                Toast.makeText(getActivity(), "Supprimé : " + selected, Toast.LENGTH_SHORT).show();
+
+                return true;
+            }
+        });
+
         return root;
 
     }
