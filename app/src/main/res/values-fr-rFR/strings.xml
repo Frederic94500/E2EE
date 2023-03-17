@@ -19,6 +19,7 @@
     <string name="m2_validate">Valider Message 2</string>
     <string name="m2_textbehind">Autre Message 2</string>
     <string name="cancel">Annuler</string>
+    <string name="pubKey">Clé Publique</string>
     <string name="copy">Copier</string>
     <string name="paste">Coller</string>
     <string name="share">Partager</string>
@@ -45,4 +46,9 @@
     <string name="err_qrc">Erreur durant la génération du QR Code</string>
     <string name="qrc_m1">QR Code Message 1</string>
     <string name="qrc_m2">QR Code Message 2</string>
+    <string name="err_empty_pubkey">Clé Publique vide</string>
+    <string name="cont_add">Ajouter Contact</string>
+    <string name="err_wrong_pubkey">Mauvais Clé Publique!</string>
+    <string name="err_empty_name">Nom vide</string>
+    <string name="name">Nom</string>
 </resources>

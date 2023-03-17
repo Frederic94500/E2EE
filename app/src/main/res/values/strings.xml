@@ -9,8 +9,8 @@
     <string name="menu_gallery">Contacts</string>
     <string name="menu_slideshow">About</string>
     <string name="cancel">Cancel</string>
-    <string name="Username">username</string>
-    <string name="pubKey">pubKey</string>
+    <string name="name">Name</string>
+    <string name="pubKey">Public Key</string>
     <string name="copy">Copy</string>
     <string name="paste">Paste</string>
     <string name="share">Share</string>
@@ -46,4 +46,8 @@
     <string name="err_qrc">Error during generating QR Code</string>
     <string name="qrc_m1">QR Code Message 1</string>
     <string name="qrc_m2">QR Code Message 2</string>
+    <string name="err_empty_name">Empty username</string>
+    <string name="err_empty_pubkey">Empty Public Key</string>
+    <string name="cont_add">Add contact</string>
+    <string name="err_wrong_pubkey">Wrong Public Key!</string>
 </resources>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.gallery.GalleryFragment">
+    tools:context=".ui.directory.DirectoryFragment">
 
 
     <LinearLayout
@@ -16,26 +16,18 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1">
 
-        <Button
-            android:id="@+id/add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ADD" />
-
-        <Button
-            android:id="@+id/delete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="DELETE" />
+        </ListView>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/dummy_button"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dummy" />
+        android:layout_gravity="bottom|end"
+        android:clickable="true"
+        android:src="@drawable/baseline_add_48" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

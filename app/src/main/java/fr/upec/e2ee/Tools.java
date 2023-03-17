@@ -258,7 +258,7 @@ public class Tools {
         } else if (Tools.toBytes(keyPem).length == 91) {
             return keyPem;
         }
-        throw new IllegalArgumentException("Can't find public key!");
+        return null; //Not found
     }
 
     /**
@@ -359,6 +359,7 @@ public class Tools {
 
     /**
      * Paste from clipboard
+     *
      * @return Return string
      */
     public static String pasteFromClipboard() {
@@ -369,6 +370,7 @@ public class Tools {
 
     /**
      * Generate QR Code
+     *
      * @param input Input
      * @return Return QR Code as Bitmap
      */
