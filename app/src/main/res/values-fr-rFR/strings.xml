@@ -4,7 +4,7 @@
     <string name="nav_header_desc">E2EE</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_afficher">Afficher</string>
-    <string name="menu_home">Menu principale</string>
+    <string name="menu_home">Menu principal</string>
     <string name="menu_identity">Identité</string>
     <string name="menu_gallery">Contacts</string>
     <string name="menu_slideshow">A propos</string>
@@ -51,4 +51,5 @@
     <string name="err_wrong_pubkey">Mauvais Clé Publique!</string>
     <string name="err_empty_name">Nom vide</string>
     <string name="name">Nom</string>
+    <string name="err_already_name">Nom déjà existant!</string>
 </resources>

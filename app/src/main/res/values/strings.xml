@@ -50,4 +50,5 @@
     <string name="err_empty_pubkey">Empty Public Key</string>
     <string name="cont_add">Add contact</string>
     <string name="err_wrong_pubkey">Wrong Public Key!</string>
+    <string name="err_already_name">Name already exists!</string>
 </resources>

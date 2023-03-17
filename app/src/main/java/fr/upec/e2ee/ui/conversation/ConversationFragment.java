@@ -76,12 +76,8 @@ public class ConversationFragment extends Fragment {
 
         //Paste
         pasteButton.setOnClickListener(view -> {
-            if (!messageTextZone.getText().toString().isEmpty()) {
-                String message = Tools.pasteFromClipboard();
-                messageTextZone.setText(message);
-            } else {
-                messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
-            }
+            String message = Tools.pasteFromClipboard();
+            messageTextZone.setText(message);
         });
 
         //Cipher

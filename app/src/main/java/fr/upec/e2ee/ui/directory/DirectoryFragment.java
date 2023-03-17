@@ -19,8 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import fr.upec.e2ee.R;
 import fr.upec.e2ee.Tools;
@@ -28,7 +26,7 @@ import fr.upec.e2ee.databinding.FragmentDirectoryBinding;
 import fr.upec.e2ee.mystate.MyState;
 
 public class DirectoryFragment extends Fragment {
-    ListView l;
+    ListView listView;
     MyState myState;
     private FragmentDirectoryBinding binding;
 
@@ -42,6 +40,10 @@ public class DirectoryFragment extends Fragment {
 
         binding = FragmentDirectoryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        ArrayAdapter<String> arr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyDirectory().getListName());
+        listView = root.findViewById(R.id.list);
+        listView.setAdapter(arr);
 
         final FloatingActionButton buttonAdd = binding.fabAddContact;
 
@@ -58,6 +60,7 @@ public class DirectoryFragment extends Fragment {
             final EditText pubKey = contactDialogView.findViewById(R.id.pubKey);
 
             dialog.setOnShowListener(dialog1 -> {
+                //Button OK
                 final Button buttonOK = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
                 buttonOK.setOnClickListener(v1 -> {
                     String textUsername = username.getText().toString();
@@ -72,12 +75,16 @@ public class DirectoryFragment extends Fragment {
                         username.setError(getResources().getText(R.string.err_empty_name));
                     } else if (textPubKey.isEmpty()) {
                         pubKey.setError(getResources().getText(R.string.err_empty_pubkey));
+                    } else if (myState.getMyDirectory().isInDirectory(textUsername)) {
+                        username.setError(getResources().getText(R.string.err_already_name));
                     } else if (parsedPubKey == null || !Tools.isECPubKey(Tools.toBytes(Tools.keyParser(textPubKey)))) {
                         pubKey.setError(getResources().getText(R.string.err_wrong_pubkey));
                     } else {
                         myState.getMyDirectory().addPerson(textUsername, Tools.toBytes(Tools.keyParser(textPubKey)));
                         try {
                             myState.save();
+                            ArrayAdapter<String> array = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyDirectory().getListName());
+                            listView.setAdapter(array);
                             dialog.dismiss();
                         } catch (IOException | GeneralSecurityException e) {
                             throw new RuntimeException(e);
@@ -85,6 +92,7 @@ public class DirectoryFragment extends Fragment {
                     }
                 });
 
+                //Button Cancel
                 final Button buttonCancel = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
                 buttonCancel.setOnClickListener(v2 -> {
                     dialog.cancel();
@@ -94,18 +102,7 @@ public class DirectoryFragment extends Fragment {
             dialog.show();
         });
 
-        System.out.println("debug readfile to display directory in a listview ");
-        l = root.findViewById(R.id.list);
-        ArrayAdapter<String> arr;
-
-        //arr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, contacts);
-        try {
-            arr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, convertHashMapToList(myState.getMyDirectory().readFile()));
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
-        l.setAdapter(arr);
-        l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedContact = (String) parent.getItemAtPosition(position);
@@ -119,7 +116,7 @@ public class DirectoryFragment extends Fragment {
                 dialog.show();
             }
         });
-        l.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Récupérer l'élément sélectionné
@@ -140,7 +137,6 @@ public class DirectoryFragment extends Fragment {
         });
 
         return root;
-
     }
 
     @Override
@@ -152,13 +148,5 @@ public class DirectoryFragment extends Fragment {
             throw new RuntimeException(e);
         }
         binding = null;
-    }
-
-    public ArrayList<String> convertHashMapToList(HashMap<String, byte[]> map) {
-        System.out.println("debug converthashmap  to display contacts");
-        System.out.println(">>>" + map.keySet() + "map keyset                                   map keyset ");
-        ArrayList<String> list = new ArrayList<>(map.keySet());
-        System.out.println(list);
-        return list;
     }
 }
