@@ -27,6 +27,7 @@ import fr.upec.e2ee.ui.message1.Message1Fragment;
 public class HomeFragment extends Fragment {
     ListView listView;
     ListAdapter listAdapter;
+    TextView textView;
     private MyState myState;
     private FragmentHomeBinding binding;
 
@@ -36,6 +37,7 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("create");
         TransitionInflater transitionInflater = TransitionInflater.from(requireContext());
         setExitTransition(transitionInflater.inflateTransition(R.transition.fade));
         setEnterTransition(transitionInflater.inflateTransition(R.transition.slide_right));
@@ -49,6 +51,16 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        listView = binding.homeConvList;
+        textView = binding.emptyConv;
+        binding.fabStartConv.setOnClickListener(view -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
+            fragmentTransaction.commit();
+        });
+
         generateFragment();
 
         return root;
@@ -57,6 +69,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        System.out.println("destroy");
         try {
             myState.save();
         } catch (IOException | GeneralSecurityException e) {
@@ -70,6 +83,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println("resume");
         try {
             myState = MyState.load();
         } catch (GeneralSecurityException | IOException e) {
@@ -82,7 +96,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
+        System.out.println("pause");
         try {
             myState.save();
         } catch (IOException | GeneralSecurityException e) {
@@ -99,16 +113,6 @@ public class HomeFragment extends Fragment {
             fm.popBackStack();
         }
 
-        binding.fabStartConv.setOnClickListener(view -> {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
-            fragmentTransaction.commit();
-        });
-
-        listView = binding.homeConvList;
-        TextView textView = binding.emptyConv;
         if (myState.getMyConversations().getSize() == 0) {
             listView.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
