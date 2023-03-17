@@ -1,7 +1,6 @@
 package fr.upec.e2ee;
 
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,11 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 import fr.upec.e2ee.databinding.ActivityMainBinding;
-import fr.upec.e2ee.mystate.MyState;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
@@ -63,24 +58,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            myState.save();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        try {
-            myState.save();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,7 +46,7 @@ public class GalleryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         GalleryViewModel galleryViewModel =
                 new ViewModelProvider(this).get(GalleryViewModel.class);
-                
+
         try {
             myState = MyState.load();
         } catch (GeneralSecurityException e) {
@@ -55,18 +54,12 @@ public class GalleryFragment extends Fragment {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+
         binding = FragmentGalleryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //final TextView textView = binding.textGallery;
-        //final TextView textView = binding.textGallery;
-        //galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        final TextView textDirectory = binding.testDirectory;
         final Button buttonAdd = binding.add;
         final Button buttonDelete = binding.delete;
-        String random = myState.getMyDirectory().getSize() + "";
-        textDirectory.setText(random);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,23 +83,16 @@ public class GalleryFragment extends Fragment {
                                 } else {
                                     if (Tools.isECPubKey(Tools.toBytes(textPubKey))) {
                                         myState.getMyDirectory().addPerson(textUsername, Tools.toBytes(textPubKey));
-                                        String random2 = myState.getMyDirectory().getSize() + "";
-                                        textDirectory.setText(random2);
                                         try {
                                             myState.save();
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (GeneralSecurityException e) {
+                                        } catch (IOException | GeneralSecurityException e) {
                                             throw new RuntimeException(e);
                                         }
                                     } else {
                                         Toast.makeText(getActivity(), "Erreur clé public invalide", Toast.LENGTH_SHORT).show();
                                         return;
-
                                     }
-
                                 }
-
                             }
                         })
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -173,9 +159,6 @@ public class GalleryFragment extends Fragment {
                 return true;
             }
         });
-
-        final Button buttonview = binding.afficher;
-        buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
 
         final Button dummy = binding.dummyButton;
         dummy.setOnClickListener(view -> {

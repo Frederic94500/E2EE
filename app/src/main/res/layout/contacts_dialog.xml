@@ -9,7 +9,7 @@
         android:background="#FFFFBB33"
         android:contentDescription="@string/app_name"
         android:scaleType="center"
-        android:src="@drawable/contacts_icon__26" />
+        android:src="@drawable/baseline_contacts_48" />
 
     <EditText
         android:id="@+id/username"

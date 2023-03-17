@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -89,6 +88,4 @@ public class IdentityFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-
 }
