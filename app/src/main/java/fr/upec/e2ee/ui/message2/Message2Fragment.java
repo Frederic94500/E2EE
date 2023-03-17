@@ -166,11 +166,11 @@ public class Message2Fragment extends Fragment {
                 myState.save();
 
                 Toast.makeText(E2EE.getContext(), R.string.conv_created, Toast.LENGTH_SHORT).show();
+
                 Fragment fragment = HomeFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_content_main, fragment)
-                        .addToBackStack(null)
                         .commit();
             } catch (NoSuchElementException e) {
                 Toast.makeText(E2EE.getContext(), getResources().getText(R.string.err_msg).toString() + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -185,11 +185,6 @@ public class Message2Fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            myState.save();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }

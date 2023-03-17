@@ -94,11 +94,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void generateFragment() {
+        FragmentManager fm = getParentFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+            fm.popBackStack();
+        }
+
         binding.fabStartConv.setOnClickListener(view -> {
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
             fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
             fragmentTransaction.commit();
         });
 

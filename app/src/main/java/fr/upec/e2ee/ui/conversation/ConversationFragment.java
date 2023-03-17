@@ -25,6 +25,7 @@ import fr.upec.e2ee.databinding.FragmentConversationBinding;
 import fr.upec.e2ee.mystate.MyState;
 import fr.upec.e2ee.protocol.Cipher;
 import fr.upec.e2ee.protocol.Conversation;
+import fr.upec.e2ee.ui.home.HomeFragment;
 
 public class ConversationFragment extends Fragment {
     private MyState myState;
@@ -133,22 +134,10 @@ public class ConversationFragment extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            /*FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment fragment = HomeFragment.newInstance();
+            FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()
-                    .remove(this)
-                    .addToBackStack(null)
-                    .commit();*/
-
-            /*FragmentManager manager = getParentFragmentManager();
-            manager.beginTransaction()
-                    .remove(this)
-                    .addToBackStack(null)
-                    .commit();*/
-
-            FragmentManager parentFragmentManager = getParentFragmentManager();
-            parentFragmentManager.beginTransaction()
-                    .remove(this)
-                    .addToBackStack("home")
+                    .replace(R.id.nav_host_fragment_content_main, fragment)
                     .commit();
         });
 
