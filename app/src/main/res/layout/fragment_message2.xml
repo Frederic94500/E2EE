@@ -103,4 +103,14 @@
         android:text="TextView"
         tools:layout_editor_absoluteX="26dp"
         tools:layout_editor_absoluteY="554dp" />
+
+    <ImageButton
+        android:id="@+id/qrc_m2_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_qr_code_2_48"
+        android:enabled="false"
+        android:clickable="false"
+        tools:layout_editor_absoluteX="319dp"
+        tools:layout_editor_absoluteY="170dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">E2EE</string>
     <string name="nav_header_title">E2EE</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_desc">E2EE</string>
     <string name="action_settings">Settings</string>
     <string name="action_afficher">Show</string>
     <string name="menu_home">Home</string>
@@ -40,6 +40,8 @@
     <string name="id_replace">Replace</string>
     <string name="id_replaced">Replaced identity!</string>
     <string name="id_pubkey">Show Public Key</string>
-    <string name="qrc_pubkey">QRCode Public Key</string>
+    <string name="qrc_pubkey">QR Code Public Key</string>
     <string name="err_qrc">Error during generating QR Code</string>
+    <string name="qrc_m1">QR Code Message 1</string>
+    <string name="qrc_m2">QR Code Message 2</string>
 </resources>
