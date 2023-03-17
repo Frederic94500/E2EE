@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name">E2EE</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">E2EE</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>:
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_desc">E2EE</string>
     <string name="action_settings">Settings</string>
     <string name="action_afficher">Show</string>
     <string name="menu_home">Home</string>
@@ -37,4 +34,16 @@
     <string name="err_msg">Error! </string>
     <string name="err_ex_size">"The other Message 1 is not the expected size!"</string>
     <string name="err_unk_send">"Unknown sender!"</string>
+    <string name="conv_deleted">Conversation deleted!</string>
+    <string name="empty_conv">No conversations! Please create a new conversation</string>
+    <string name="conv_empty_message">Empty message!</string>
+    <string name="message">Message</string>
+    <string name="err_msg_wrong">Error on decipher!</string>
+    <string name="id_replace">Replace</string>
+    <string name="id_replaced">Replaced identity!</string>
+    <string name="id_pubkey">Show Public Key</string>
+    <string name="qrc_pubkey">QR Code Public Key</string>
+    <string name="err_qrc">Error during generating QR Code</string>
+    <string name="qrc_m1">QR Code Message 1</string>
+    <string name="qrc_m2">QR Code Message 2</string>
 </resources>

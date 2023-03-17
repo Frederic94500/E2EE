@@ -1,6 +1,8 @@
 package fr.upec.e2ee.ui.message2;
 
+import android.app.AlertDialog;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -8,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +43,7 @@ public class Message2Fragment extends Fragment {
     private Button resetMessage2Button;
     private Button shareMessage2Button;
     private Button copyMessage2Button;
+    private ImageButton genQRCMessage2Button;
     private Button pasteMessage2Button;
     private EditText otherMessage2Text;
     private Button validateMessage2Text;
@@ -78,6 +83,7 @@ public class Message2Fragment extends Fragment {
         resetMessage2Button = binding.resetM2Button;
         shareMessage2Button = binding.shareM2Button;
         copyMessage2Button = binding.copyM2Button;
+        genQRCMessage2Button = binding.qrcM2Button;
         pasteMessage2Button = binding.pasteM2Button;
         otherMessage2Text = binding.otherM2Text;
         validateMessage2Text = binding.validateM2Button;
@@ -102,6 +108,8 @@ public class Message2Fragment extends Fragment {
                 resetMessage2Button.setEnabled(true);
                 shareMessage2Button.setEnabled(true);
                 copyMessage2Button.setEnabled(true);
+                genQRCMessage2Button.setEnabled(true);
+                genQRCMessage2Button.setClickable(true);
                 pasteMessage2Button.setEnabled(true);
                 otherMessage2Text.setEnabled(true);
                 validateMessage2Text.setEnabled(true);
@@ -141,6 +149,8 @@ public class Message2Fragment extends Fragment {
             resetMessage2Button.setEnabled(false);
             shareMessage2Button.setEnabled(false);
             copyMessage2Button.setEnabled(false);
+            genQRCMessage2Button.setEnabled(false);
+            genQRCMessage2Button.setClickable(false);
             pasteMessage2Button.setEnabled(false);
             otherMessage2Text.setEnabled(false);
             validateMessage2Text.setEnabled(false);
@@ -151,6 +161,20 @@ public class Message2Fragment extends Fragment {
 
         //Copy Message 2
         copyMessage2Button.setOnClickListener(view -> Tools.copyToClipboard("Message2", myMessage2));
+
+        //Generate QRCode button
+        genQRCMessage2Button.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+            final View qrCodeView = layoutInflater.inflate(R.layout.qrcode_alertdialog, null);
+            final ImageView qrcode = qrCodeView.findViewById(R.id.qrc_view);
+
+            Bitmap bitmap = Tools.generateQRCode(myMessage2);
+            qrcode.setImageBitmap(bitmap);
+            builder.setView(qrCodeView)
+                    .setTitle(R.string.qrc_m2)
+                    .show();
+        });
 
         //Paste Message 2
         pasteMessage2Button.setOnClickListener(view -> {
@@ -166,15 +190,15 @@ public class Message2Fragment extends Fragment {
                 myState.save();
 
                 Toast.makeText(E2EE.getContext(), R.string.conv_created, Toast.LENGTH_SHORT).show();
+
                 Fragment fragment = HomeFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_content_main, fragment)
-                        .addToBackStack(null)
                         .commit();
             } catch (NoSuchElementException e) {
                 Toast.makeText(E2EE.getContext(), getResources().getText(R.string.err_msg).toString() + e.getMessage(), Toast.LENGTH_SHORT).show();
-            } catch (GeneralSecurityException | IOException e) {
+            } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
                 Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
             }
         });
@@ -185,11 +209,6 @@ public class Message2Fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            myState.save();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }

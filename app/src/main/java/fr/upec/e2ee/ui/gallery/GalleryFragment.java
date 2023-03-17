@@ -47,6 +47,7 @@ public class GalleryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         GalleryViewModel galleryViewModel =
                 new ViewModelProvider(this).get(GalleryViewModel.class);
+                
         try {
             myState = MyState.load();
         } catch (GeneralSecurityException e) {
@@ -54,6 +55,7 @@ public class GalleryFragment extends Fragment {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        
         binding = FragmentGalleryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -172,6 +174,19 @@ public class GalleryFragment extends Fragment {
             }
         });
 
+        final Button buttonview = binding.afficher;
+        buttonview.setOnClickListener(v -> startActivity(new Intent(getContext(), Activity2.class)));
+
+        final Button dummy = binding.dummyButton;
+        dummy.setOnClickListener(view -> {
+            myState.getMyDirectory().addPerson("me", myState.getMyPublicKey().getEncoded());
+            try {
+                myState.save();
+            } catch (IOException | GeneralSecurityException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         return root;
 
     }
@@ -181,9 +196,7 @@ public class GalleryFragment extends Fragment {
         super.onDestroyView();
         try {
             myState.save();
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
         binding = null;
@@ -196,6 +209,4 @@ public class GalleryFragment extends Fragment {
         System.out.println(list);
         return list;
     }
-
-
 }

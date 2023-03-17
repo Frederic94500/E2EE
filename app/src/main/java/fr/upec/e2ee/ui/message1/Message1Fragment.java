@@ -1,5 +1,7 @@
 package fr.upec.e2ee.ui.message1;
 
+import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -7,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -58,6 +62,7 @@ public class Message1Fragment extends Fragment {
         final Button resetMessage1Button = binding.resetM1Button;
         final Button shareMessage1Button = binding.shareM1Button;
         final Button copyMessage1Button = binding.copyM1Button;
+        final ImageButton genQRCMessage1Button = binding.qrcM1Button;
         final Button pasteMessage1Button = binding.pasteM1Button;
         EditText otherMessage1Text = binding.otherM1Textzone;
         final Button validateMessage1Button = binding.validateM1Button;
@@ -73,6 +78,8 @@ public class Message1Fragment extends Fragment {
                 resetMessage1Button.setEnabled(true);
                 shareMessage1Button.setEnabled(true);
                 copyMessage1Button.setEnabled(true);
+                genQRCMessage1Button.setEnabled(true);
+                genQRCMessage1Button.setClickable(true);
                 pasteMessage1Button.setEnabled(true);
                 otherMessage1Text.setEnabled(true);
                 validateMessage1Button.setEnabled(true);
@@ -93,6 +100,8 @@ public class Message1Fragment extends Fragment {
             resetMessage1Button.setEnabled(false);
             shareMessage1Button.setEnabled(false);
             copyMessage1Button.setEnabled(false);
+            genQRCMessage1Button.setEnabled(false);
+            genQRCMessage1Button.setClickable(false);
             pasteMessage1Button.setEnabled(false);
             otherMessage1Text.setEnabled(false);
             validateMessage1Button.setEnabled(false);
@@ -103,6 +112,20 @@ public class Message1Fragment extends Fragment {
 
         //Copy Message 1
         copyMessage1Button.setOnClickListener(view -> Tools.copyToClipboard("Message1", Tools.toBase64(myMessage1.toBytes())));
+
+        //Generate QRCode button
+        genQRCMessage1Button.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+            final View qrCodeView = layoutInflater.inflate(R.layout.qrcode_alertdialog, null);
+            final ImageView qrcode = qrCodeView.findViewById(R.id.qrc_view);
+
+            Bitmap bitmap = Tools.generateQRCode(Tools.toBase64(myMessage1.toBytes()));
+            qrcode.setImageBitmap(bitmap);
+            builder.setView(qrCodeView)
+                    .setTitle(R.string.qrc_m1)
+                    .show();
+        });
 
         //Paste Message 1
         pasteMessage1Button.setOnClickListener(view -> {
@@ -137,11 +160,6 @@ public class Message1Fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            myState.save();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }

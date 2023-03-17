@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">E2EE</string>
+    <string name="nav_header_desc">E2EE</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_afficher">Afficher</string>
     <string name="menu_home">Menu principale</string>
@@ -32,4 +33,16 @@
     <string name="err_msg">"Erreur! "</string>
     <string name="err_ex_size">L\'autre Message 1 n\'a pas la taille exceptée!</string>
     <string name="err_unk_send">Emetteur inconnu!</string>
+    <string name="conv_deleted">Conversation supprimée!</string>
+    <string name="empty_conv">Aucune conversation! Veuillez créer une nouvelle conversation</string>
+    <string name="conv_empty_message">Message vide!</string>
+    <string name="message">Message</string>
+    <string name="err_msg_wrong">Erreur lors du déchiffrement!</string>
+    <string name="id_replace">Remplacer</string>
+    <string name="id_replaced">Identité remplacé!</string>
+    <string name="id_pubkey">Afficher Clé Publique</string>
+    <string name="qrc_pubkey">QR Code Clé Publique</string>
+    <string name="err_qrc">Erreur durant la génération du QR Code</string>
+    <string name="qrc_m1">QR Code Message 1</string>
+    <string name="qrc_m2">QR Code Message 2</string>
 </resources>

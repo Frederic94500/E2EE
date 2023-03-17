@@ -19,8 +19,8 @@
         android:layout_height="124dp"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/e2ee"
-        tools:srcCompat="@drawable/e2ee" />
+        app:srcCompat="@drawable/icon"
+        tools:srcCompat="@drawable/icon" />
 
 
 </LinearLayout>
