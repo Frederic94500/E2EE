@@ -41,4 +41,6 @@
     <string name="id_replace">Remplacer</string>
     <string name="id_replaced">Identité remplacé!</string>
     <string name="id_pubkey">Afficher Clé Publique</string>
+    <string name="qrc_pubkey">QRCode Clé Publique</string>
+    <string name="err_qrc">Erreur durant la génération du QR Code</string>
 </resources>

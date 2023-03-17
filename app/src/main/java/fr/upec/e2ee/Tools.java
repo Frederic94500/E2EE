@@ -6,8 +6,16 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.widget.Toast;
 
 import androidx.security.crypto.EncryptedFile;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -349,9 +357,37 @@ public class Tools {
         clipboard.setPrimaryClip(clipData);
     }
 
+    /**
+     * Paste from clipboard
+     * @return Return string
+     */
     public static String pasteFromClipboard() {
         ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
         return (String) item.getText();
+    }
+
+    /**
+     * Generate QR Code
+     * @param input Input
+     * @return Return QR Code as Bitmap
+     */
+    public static Bitmap generateQRCode(String input) {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = qrCodeWriter.encode(input, BarcodeFormat.QR_CODE, 1024, 1024);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            return bitmap;
+        } catch (WriterException e) {
+            Toast.makeText(E2EE.getContext(), R.string.err_qrc, Toast.LENGTH_SHORT).show();
+        }
+        throw new IllegalStateException("");
     }
 }

@@ -1,10 +1,14 @@
 package fr.upec.e2ee.ui.identity;
 
+import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +65,21 @@ public class IdentityFragment extends Fragment {
             } catch (GeneralSecurityException | IOException e) {
                 throw new RuntimeException(e);
             }
+        });
+
+        //Generate QRCode button
+        final ImageButton genQRC = binding.idGenQrc;
+        genQRC.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+            final View qrCodeView = layoutInflater.inflate(R.layout.qrcode_alertdialog, null);
+            final ImageView qrcode = qrCodeView.findViewById(R.id.qrc_view);
+
+            Bitmap bitmap = Tools.generateQRCode(Tools.toBase64(myState.getMyPublicKey().getEncoded()));
+            qrcode.setImageBitmap(bitmap);
+            builder.setView(qrCodeView)
+                    .setTitle(R.string.qrc_pubkey)
+                    .show();
         });
 
         return root;

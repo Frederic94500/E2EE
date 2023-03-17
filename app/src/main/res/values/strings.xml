@@ -40,4 +40,6 @@
     <string name="id_replace">Replace</string>
     <string name="id_replaced">Replaced identity!</string>
     <string name="id_pubkey">Show Public Key</string>
+    <string name="qrc_pubkey">QRCode Public Key</string>
+    <string name="err_qrc">Error during generating QR Code</string>
 </resources>
