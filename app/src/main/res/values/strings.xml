@@ -9,6 +9,8 @@
     <string name="menu_gallery">Contacts</string>
     <string name="menu_slideshow">About</string>
     <string name="cancel">Cancel</string>
+    <string name="Username">username</string>
+    <string name="pubKey">pubKey</string>
     <string name="copy">Copy</string>
     <string name="paste">Paste</string>
     <string name="share">Share</string>

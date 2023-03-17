@@ -40,7 +40,6 @@ public class IdentityFragment extends Fragment {
         binding = FragmentIdentityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //Show Public Key
         final TextView textView = binding.textIdentity;
         textView.setOnClickListener(view -> {
             textView.setText(Tools.toBase64(myState.getMyPublicKey().getEncoded()));
@@ -90,4 +89,6 @@ public class IdentityFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
 }
