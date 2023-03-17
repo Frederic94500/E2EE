@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -28,6 +30,7 @@ public class HomeFragment extends Fragment {
     ListView listView;
     ListAdapter listAdapter;
     TextView textView;
+    FloatingActionButton fab;
     private MyState myState;
     private FragmentHomeBinding binding;
 
@@ -51,14 +54,31 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        listView = binding.homeConvList;
         textView = binding.emptyConv;
-        binding.fabStartConv.setOnClickListener(view -> {
+        listView = binding.homeConvList;
+        fab = binding.fabStartConv;
+
+        fab.setOnClickListener(view -> {
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.replace(R.id.nav_host_fragment_content_main, Message1Fragment.newInstance());
             fragmentTransaction.commit();
+        });
+
+        listView.setClickable(true);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            fab.setVisibility(View.GONE);
+            ConversationFragment conversationFragment = ConversationFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putInt("Conv", position);
+            conversationFragment.setArguments(bundle);
+
+            FragmentManager homeFragment = getParentFragmentManager();
+            homeFragment.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, conversationFragment, "childConv")
+                    .addToBackStack("home")
+                    .commit();
         });
 
         generateFragment();
@@ -122,20 +142,6 @@ public class HomeFragment extends Fragment {
         }
 
         listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyConversations().nameConversations());
-        listView.setClickable(true);
         listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            binding.fabStartConv.setVisibility(View.GONE);
-            ConversationFragment conversationFragment = ConversationFragment.newInstance();
-            Bundle bundle = new Bundle();
-            bundle.putInt("Conv", position);
-            conversationFragment.setArguments(bundle);
-
-            FragmentManager homeFragment = getParentFragmentManager();
-            homeFragment.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, conversationFragment, "childConv")
-                    .addToBackStack("home")
-                    .commit();
-        });
     }
 }

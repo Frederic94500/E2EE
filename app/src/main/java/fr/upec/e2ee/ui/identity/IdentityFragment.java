@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,42 +15,53 @@ import androidx.lifecycle.ViewModelProvider;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import fr.upec.e2ee.E2EE;
+import fr.upec.e2ee.R;
 import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.databinding.FragmentIdentityBinding;
 import fr.upec.e2ee.mystate.MyState;
 
 public class IdentityFragment extends Fragment {
-    MyState mystate;
+    MyState myState;
     private @NonNull FragmentIdentityBinding binding;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         try {
-            mystate = MyState.load();
+            myState = MyState.load();
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
-        IdentityViewModel identityViewModel =
-                new ViewModelProvider(this).get(IdentityViewModel.class);
 
         binding = FragmentIdentityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         //Show Public Key
         final TextView textView = binding.textIdentity;
-        identityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         textView.setOnClickListener(view -> {
-            textView.setText(Tools.toBase64(mystate.getMyPublicKey().getEncoded()));
+            textView.setText(Tools.toBase64(myState.getMyPublicKey().getEncoded()));
         });
 
         //Share button
         final Button shareButton = binding.shareButton;
-        shareButton.setOnClickListener(view -> startActivity(Tools.shareIntent(Tools.toPEMFormat(mystate.getMyPublicKey().getEncoded()))));
+        shareButton.setOnClickListener(view -> startActivity(Tools.shareIntent(Tools.toPEMFormat(myState.getMyPublicKey().getEncoded()))));
 
         //Copy button
         final Button copyButton = binding.copyButton;
-        copyButton.setOnClickListener(view -> Tools.copyToClipboard("PubKey", Tools.toPEMFormat(mystate.getMyPublicKey().getEncoded())));
+        copyButton.setOnClickListener(view -> Tools.copyToClipboard("PubKey", Tools.toPEMFormat(myState.getMyPublicKey().getEncoded())));
+
+        //Replace button
+        final Button replaceButton = binding.replaceButton;
+        replaceButton.setOnClickListener(view -> {
+            try {
+                myState.replaceMyKeyPair();
+                myState.save();
+                Toast.makeText(E2EE.getContext(), R.string.id_replaced, Toast.LENGTH_SHORT).show();
+                textView.setText(Tools.toBase64(myState.getMyPublicKey().getEncoded()));
+            } catch (GeneralSecurityException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         return root;
     }
@@ -57,11 +69,6 @@ public class IdentityFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            mystate.save();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }

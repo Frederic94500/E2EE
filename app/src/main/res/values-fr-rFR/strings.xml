@@ -38,4 +38,7 @@
     <string name="conv_empty_message">Message vide!</string>
     <string name="message">Message</string>
     <string name="err_msg_wrong">Erreur lors du déchiffrement!</string>
+    <string name="id_replace">Remplacer</string>
+    <string name="id_replaced">Identité remplacé!</string>
+    <string name="id_pubkey">Afficher Clé Publique</string>
 </resources>

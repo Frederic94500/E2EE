@@ -137,11 +137,6 @@ public class Message1Fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            myState.save();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
         binding = null;
     }
 }

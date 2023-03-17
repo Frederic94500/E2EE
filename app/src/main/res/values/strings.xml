@@ -37,4 +37,7 @@
     <string name="conv_empty_message">Empty message!</string>
     <string name="message">Message</string>
     <string name="err_msg_wrong">Error on decipher!</string>
+    <string name="id_replace">Replace</string>
+    <string name="id_replaced">Replaced identity!</string>
+    <string name="id_pubkey">Show Public Key</string>
 </resources>
