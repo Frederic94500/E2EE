@@ -6,8 +6,8 @@
     <string name="action_afficher">Show</string>
     <string name="menu_home">Home</string>
     <string name="menu_identity">Identity</string>
-    <string name="menu_gallery">Contacts</string>
-    <string name="menu_slideshow">About</string>
+    <string name="menu_directory">Directory</string>
+    <string name="menu_about">About</string>
     <string name="cancel">Cancel</string>
     <string name="name">Name</string>
     <string name="pubKey">Public Key</string>
@@ -17,7 +17,7 @@
     <string name="id_share">Share</string>
     <string name="id_copy">Copy</string>
     <string name="reset">Reset</string>
-    <string name="unex_err">Unexpected error!</string>
+    <string name="err_unex">Unexpected error!</string>
     <string name="m1_generate">Generate Message 1</string>
     <string name="m1_validate">Validate Message 1</string>
     <string name="m1_textbehind">Other Message 1</string>
@@ -51,4 +51,9 @@
     <string name="cont_add">Add contact</string>
     <string name="err_wrong_pubkey">Wrong Public Key!</string>
     <string name="err_already_name">Name already exists!</string>
+    <string name="cont_info">Contact information</string>
+    <string name="delete">Delete</string>
+    <string name="popup_info">Information</string>
+    <string name="deleted">Deleted</string>
+    <string name="cont_added">User added</string>
 </resources>

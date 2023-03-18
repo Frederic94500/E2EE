@@ -87,7 +87,7 @@ public class ConversationFragment extends Fragment {
                     String cipheredMessage = Tools.toBase64(Cipher.cipher(Tools.toSecretKey(conversation.getSecretKey()), messageTextZone.getText().toString().getBytes(StandardCharsets.UTF_8)));
                     messageTextZone.setText(cipheredMessage);
                 } catch (GeneralSecurityException e) {
-                    Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(E2EE.getContext(), R.string.err_unex, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 messageTextZone.setError(getResources().getText(R.string.conv_empty_message).toString());
@@ -101,7 +101,7 @@ public class ConversationFragment extends Fragment {
                     String decipheredMessage = new String(Cipher.decipher(Tools.toSecretKey(conversation.getSecretKey()), Tools.toBytes(messageTextZone.getText().toString())));
                     messageTextZone.setText(decipheredMessage);
                 } catch (GeneralSecurityException e) {
-                    Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(E2EE.getContext(), R.string.err_unex, Toast.LENGTH_SHORT).show();
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(E2EE.getContext(), R.string.err_msg_wrong, Toast.LENGTH_SHORT).show();
                 }

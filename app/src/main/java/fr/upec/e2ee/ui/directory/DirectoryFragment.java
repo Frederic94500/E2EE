@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -61,7 +61,7 @@ public class DirectoryFragment extends Fragment {
 
             dialog.setOnShowListener(dialog1 -> {
                 //Button OK
-                final Button buttonOK = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                final Button buttonOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 buttonOK.setOnClickListener(v1 -> {
                     String textUsername = username.getText().toString();
                     String textPubKey = pubKey.getText().toString();
@@ -83,6 +83,7 @@ public class DirectoryFragment extends Fragment {
                         myState.getMyDirectory().addPerson(textUsername, Tools.toBytes(Tools.keyParser(textPubKey)));
                         try {
                             myState.save();
+                            Toast.makeText(getContext(), R.string.cont_added, Toast.LENGTH_SHORT).show();
                             ArrayAdapter<String> array = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyDirectory().getListName());
                             listView.setAdapter(array);
                             dialog.dismiss();
@@ -93,7 +94,7 @@ public class DirectoryFragment extends Fragment {
                 });
 
                 //Button Cancel
-                final Button buttonCancel = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                final Button buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                 buttonCancel.setOnClickListener(v2 -> {
                     dialog.cancel();
                 });
@@ -102,38 +103,20 @@ public class DirectoryFragment extends Fragment {
             dialog.show();
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedContact = (String) parent.getItemAtPosition(position);
-                byte[] publicKey = myState.getMyDirectory().getPerson(selectedContact);
-                String publicKeyString = Tools.toBase64(publicKey);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("Public Key:\n\n" + publicKeyString)
-                        .setTitle("Contact Information")
-                        .setPositiveButton("OK", null);
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // Récupérer l'élément sélectionné
-                String selected = (String) parent.getItemAtPosition(position);
-
-                // Supprimer l'élément de la liste et de l'ArrayAdapter
-                arr.remove(selected);
-                myState.getMyDirectory().deletePerson(selected);
-
-                // Mettre à jour la ListView
-                arr.notifyDataSetChanged();
-
-                // Afficher un message pour confirmer la suppression
-                Toast.makeText(getActivity(), "Supprimé : " + selected, Toast.LENGTH_SHORT).show();
-
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            final PopupMenu popupMenu = new PopupMenu(getContext(), view);
+            popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.popup_info) {
+                    showPerson((String) parent.getItemAtPosition(position));
+                } else if (item.getItemId() == R.id.popup_delete) {
+                    deletePerson((String) parent.getItemAtPosition(position));
+                }
                 return true;
-            }
+            });
+            popupMenu.show();
+
+            return false;
         });
 
         return root;
@@ -148,5 +131,33 @@ public class DirectoryFragment extends Fragment {
             throw new RuntimeException(e);
         }
         binding = null;
+    }
+
+    private void showPerson(String name) {
+        byte[] publicKey = myState.getMyDirectory().getPerson(name);
+        String publicKeyString = Tools.toBase64(publicKey);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.cont_info)
+                .setMessage(getResources().getText(R.string.pubKey) + ":\n\n" + publicKeyString)
+                .setPositiveButton(android.R.string.ok, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deletePerson(String name) {
+        // Supprimer l'element
+        myState.getMyDirectory().deletePerson(name);
+
+        // Mettre à jour la ListView
+        listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, myState.getMyDirectory().getListName()));
+
+        // Afficher un message pour confirmer la suppression
+        Toast.makeText(getActivity(), getResources().getString(R.string.deleted) + " " + name, Toast.LENGTH_SHORT).show();
+
+        try {
+            myState.save();
+        } catch (IOException | GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
