@@ -56,4 +56,10 @@
     <string name="popup_info">Information</string>
     <string name="deleted">Deleted</string>
     <string name="cont_added">User added</string>
+    <string name="ab_title">APPLICATION E2EE</string>
+    <string name="ab_home">Home: Create a conversation and converse</string>
+    <string name="ab_directory">Directory: Add and remove users</string>
+    <string name="ab_id">Identity: Your identity + Replace</string>
+    <string name="ab_conv">Conversation: Cipher and decipher messages</string>
+    <string name="ab_created">Created by Frédéric and Mialy</string>
 </resources>

@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
+import fr.upec.e2ee.R;
 import fr.upec.e2ee.databinding.FragmentAboutBinding;
 
 public class AboutFragment extends Fragment {
@@ -20,16 +20,20 @@ public class AboutFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        AboutViewModel aboutViewModel =
-                new ViewModelProvider(this).get(AboutViewModel.class);
-
         binding = FragmentAboutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textSlideshow;
-        aboutViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        Button feature = binding.button;
-        feature.setOnClickListener(new View.OnClickListener() {
+        var res = getResources();
+        String text = res.getString(R.string.ab_title) + "\n\n" +
+                res.getString(R.string.ab_home) + "\n" +
+                res.getString(R.string.ab_directory) + "\n" +
+                res.getString(R.string.ab_id) + "\n" +
+                res.getString(R.string.ab_conv) + "\n\n" +
+                res.getString(R.string.ab_created);
+        textView.setText(text);
+        Button old = binding.button;
+        old.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Créer un intent pour lancer la nouvelle activité
