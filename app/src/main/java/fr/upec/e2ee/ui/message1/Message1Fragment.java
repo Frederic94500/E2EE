@@ -120,11 +120,14 @@ public class Message1Fragment extends Fragment {
             final View qrCodeView = layoutInflater.inflate(R.layout.qrcode_alertdialog, null);
             final ImageView qrcode = qrCodeView.findViewById(R.id.qrc_view);
 
-            Bitmap bitmap = Tools.generateQRCode(Tools.toBase64(myMessage1.toBytes()));
-            qrcode.setImageBitmap(bitmap);
-            builder.setView(qrCodeView)
-                    .setTitle(R.string.qrc_m1)
-                    .show();
+            try {
+                Bitmap bitmap = Tools.generateQRCode(Tools.toBase64(myMessage1.toBytes()));
+                qrcode.setImageBitmap(bitmap);
+                builder.setView(qrCodeView)
+                        .setTitle(R.string.qrc_m1)
+                        .show();
+            } catch (NullPointerException ignored) {
+            }
         });
 
         //Paste Message 1
