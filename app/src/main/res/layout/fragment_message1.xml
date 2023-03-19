@@ -49,6 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="208dp"
+        android:backgroundTint="@color/purple_700"
         android:clickable="false"
         android:enabled="false"
         android:src="@drawable/baseline_qr_code_2_48"
@@ -56,6 +57,7 @@
         app:layout_constraintHorizontal_bias="0.147"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/copy_m1_button"
