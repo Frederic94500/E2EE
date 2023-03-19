@@ -15,7 +15,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.E2EE.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +23,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity2" />
-        <activity android:name=".Contacts" />
     </application>
 
 </manifest>

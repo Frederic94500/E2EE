@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.SignatureException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,6 @@ public class MyDirectory {
      * @throws IOException Throws IOException if there is an I/O exception
      */
     public HashMap<String, byte[]> readFile() throws IOException, GeneralSecurityException {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!o!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         HashMap<String, byte[]> map = new HashMap<>();
 
         if (Tools.isFileExists(FILENAME)) {
@@ -112,11 +112,6 @@ public class MyDirectory {
      * @param pubKey Public Key of the person
      */
     public void addPerson(String name, byte[] pubKey) {
-
-        System.out.println("debug directory ------------------- add person");
-        System.out.println(name);
-        System.out.println("entre name ------------------- et pubkey dans  add person");
-        System.out.println(pubKey + "-------------------------------------------------------------------------------");
         directory.put(name, pubKey);
     }
 
@@ -149,36 +144,6 @@ public class MyDirectory {
     }
 
     /**
-     * Show Directory
-     *
-     * @return Return the Directory
-     */
-    public String showDirectory() {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, byte[]> entry : directory.entrySet()) {
-            sb.append(entry.getKey()).append(" : ").append(Tools.toBase64(entry.getValue())).append("\n");
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Get Key name in directory
-     *
-     * @param otherPubKey Other Public Key
-     * @return Return the Key name or null if it does not found
-     */
-    public String getKeyName(byte[] otherPubKey) {
-        if (isInDirectory(otherPubKey)) {
-            for (Map.Entry<String, byte[]> entry : directory.entrySet()) {
-                if (Arrays.equals(otherPubKey, entry.getValue())) {
-                    return entry.getKey();
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Get the user who signed the message
      *
      * @param signedMessage    Signed message
@@ -199,8 +164,12 @@ public class MyDirectory {
         throw new NoSuchElementException(E2EE.getContext().getResources().getText(R.string.err_unk_send).toString());
     }
 
-    public int getSize() {
-
-        return directory.size();
+    /**
+     * Get list of names in directory
+     *
+     * @return Return list of names
+     */
+    public ArrayList<String> getListName() {
+        return new ArrayList<>(directory.keySet());
     }
 }

@@ -4,10 +4,10 @@
     <string name="nav_header_desc">E2EE</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_afficher">Afficher</string>
-    <string name="menu_home">Menu principale</string>
+    <string name="menu_home">Menu principal</string>
     <string name="menu_identity">Identité</string>
-    <string name="menu_gallery">Contacts</string>
-    <string name="menu_slideshow">A propos</string>
+    <string name="menu_directory">Annuaire</string>
+    <string name="menu_about">A propos</string>
     <string name="id_share">Partager</string>
     <string name="nav_header_title">E2EE</string>
     <string name="id_copy">Copier</string>
@@ -19,11 +19,12 @@
     <string name="m2_validate">Valider Message 2</string>
     <string name="m2_textbehind">Autre Message 2</string>
     <string name="cancel">Annuler</string>
+    <string name="pubKey">Clé Publique</string>
     <string name="copy">Copier</string>
     <string name="paste">Coller</string>
     <string name="share">Partager</string>
     <string name="reset">Réinitialiser</string>
-    <string name="unex_err">Erreur inattendue!</string>
+    <string name="err_unex">Erreur inattendue!</string>
     <string name="m2_generated">Message 2 généré!</string>
     <string name="auth_title">Authentification</string>
     <string name="auth_desc">E2EE pour signer un message</string>
@@ -45,4 +46,15 @@
     <string name="err_qrc">Erreur durant la génération du QR Code</string>
     <string name="qrc_m1">QR Code Message 1</string>
     <string name="qrc_m2">QR Code Message 2</string>
+    <string name="err_empty_pubkey">Clé Publique vide</string>
+    <string name="cont_add">Ajouter Contact</string>
+    <string name="err_wrong_pubkey">Mauvais Clé Publique!</string>
+    <string name="err_empty_name">Nom vide</string>
+    <string name="name">Nom</string>
+    <string name="err_already_name">Nom déjà existant!</string>
+    <string name="cont_info">Information contact</string>
+    <string name="delete">Supprimer</string>
+    <string name="popup_info">Information</string>
+    <string name="deleted">Supprimé</string>
+    <string name="cont_added">Utilisateur ajouté</string>
 </resources>

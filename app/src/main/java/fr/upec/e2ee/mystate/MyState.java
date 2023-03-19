@@ -136,7 +136,7 @@ public class MyState {
     public MyConversations getMyConversations() {
         return myConversations;
     }
-    
+
     /**
      * Get MyDirectory
      *
@@ -193,15 +193,6 @@ public class MyState {
      */
     public void addAConversation(Conversation conversation) {
         myConversations.addConversation(conversation);
-    }
-
-    /**
-     * Get the size of conversations
-     *
-     * @return Return the size of conversations
-     */
-    public int getConversationSize() {
-        return myConversations.getSize();
     }
 
     /**

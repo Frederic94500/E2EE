@@ -56,8 +56,8 @@
         android:id="@+id/paste_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
         android:enabled="false"
         android:text="@string/paste"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,8 +65,8 @@
 
     <EditText
         android:id="@+id/other_m2_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="263dp"
+        android:layout_height="47dp"
         android:layout_marginStart="24dp"
         android:layout_marginBottom="80dp"
         android:ems="10"
@@ -88,29 +88,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="33dp"
-        tools:layout_editor_absoluteY="86dp" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="26dp"
-        tools:layout_editor_absoluteY="554dp" />
-
     <ImageButton
         android:id="@+id/qrc_m2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_qr_code_2_48"
-        android:enabled="false"
+        android:layout_marginTop="176dp"
+        android:layout_marginEnd="16dp"
         android:clickable="false"
-        tools:layout_editor_absoluteX="319dp"
-        tools:layout_editor_absoluteY="170dp" />
+        android:enabled="false"
+        android:src="@drawable/baseline_qr_code_2_48"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -101,7 +101,7 @@ public class Message2Fragment extends Fragment {
                 try {
                     myMessage2 = Communication.createMessage2(myState.getMyPrivateKey(), mySecretBuild);
                 } catch (GeneralSecurityException e) {
-                    Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(E2EE.getContext(), R.string.err_unex, Toast.LENGTH_SHORT).show();
                 }
 
                 generateMessage2Button.setEnabled(false);
@@ -199,7 +199,7 @@ public class Message2Fragment extends Fragment {
             } catch (NoSuchElementException e) {
                 Toast.makeText(E2EE.getContext(), getResources().getText(R.string.err_msg).toString() + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
-                Toast.makeText(E2EE.getContext(), R.string.unex_err, Toast.LENGTH_SHORT).show();
+                Toast.makeText(E2EE.getContext(), R.string.err_unex, Toast.LENGTH_SHORT).show();
             }
         });
 

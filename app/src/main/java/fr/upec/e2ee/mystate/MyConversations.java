@@ -114,14 +114,10 @@ public class MyConversations {
     }
 
     /**
-     * Get all conversations
+     * Return a list of name of all conversations
      *
-     * @return Return Conversations
+     * @return Return a list of name
      */
-    public List<Conversation> getMyConversations() {
-        return myConversations;
-    }
-
     public ArrayList<String> nameConversations() {
         ArrayList<String> temp = new ArrayList<>();
         for (Conversation c : myConversations) {
