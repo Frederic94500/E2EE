@@ -2,7 +2,6 @@ package fr.upec.e2ee.ui.identity;
 
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +67,6 @@ public class IdentityFragment extends Fragment {
 
         //Generate QRCode button
         final ImageButton genQRC = binding.idGenQrc;
-        genQRC.setBackgroundColor(Color.rgb(148, 0, 211));
         genQRC.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             LayoutInflater layoutInflater = getActivity().getLayoutInflater();
