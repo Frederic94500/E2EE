@@ -1,9 +1,11 @@
 package fr.upec.e2ee.ui.about;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,17 @@ public class AboutFragment extends Fragment {
 
         final TextView textView = binding.textSlideshow;
         aboutViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        Button feature = binding.button;
+        feature.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Créer un intent pour lancer la nouvelle activité
+                Intent intent = new Intent(getActivity(), Activity2.class);
+
+                // Démarrer l'activité
+                startActivity(intent);
+            }
+        });
 
         return root;
     }

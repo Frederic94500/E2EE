@@ -22,6 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="fr.upec.e2ee.ui.about.Activity2"
+            android:label="Activity2"></activity>
     </application>
 
 </manifest>
