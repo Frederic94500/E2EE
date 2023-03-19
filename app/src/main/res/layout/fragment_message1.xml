@@ -9,29 +9,32 @@
 
     <Button
         android:id="@+id/generate_m1_button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="20dp"
         android:enabled="true"
         android:text="@string/m1_generate"
-        app:layout_constraintEnd_toStartOf="@+id/reset_m1_button"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="">
+
+    </LinearLayout>
 
 
     <Button
         android:id="@+id/reset_m1_button"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:enabled="false"
         android:text="@string/reset"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/generate_m1_button"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="289dp"
+        tools:layout_editor_absoluteY="152dp" />
 
     <Button
         android:id="@+id/share_m1_button"
@@ -59,22 +62,21 @@
         android:id="@+id/other_m1_textzone"
         android:layout_width="381dp"
         android:layout_height="108dp"
-        android:layout_marginBottom="220dp"
         android:ems="10"
         android:enabled="false"
         android:hint="@string/m1_textbehind"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintHorizontal_bias="0.566"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/paste_m1_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="168dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="152dp"
+        android:layout_marginBottom="176dp"
         android:enabled="false"
         android:text="@string/paste"
         app:layout_constraintBottom_toTopOf="@+id/other_m1_textzone"
@@ -84,12 +86,9 @@
         android:id="@+id/validate_m1_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="160dp"
         android:enabled="false"
         android:text="@string/m1_validate"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/other_m1_textzone"
-        tools:layout_editor_absoluteX="184dp" />
+        tools:layout_editor_absoluteX="163dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
