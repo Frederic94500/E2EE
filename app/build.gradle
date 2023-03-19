@@ -32,15 +32,18 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    implementation 'androidx.security:security-crypto:1.0.0'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'com.google.zxing:core:3.5.1'
+    annotationProcessor 'androidx.databinding:databinding-compiler:7.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testCompileOnly 'junit:junit:4.13.2'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

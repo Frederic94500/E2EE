@@ -2,14 +2,27 @@ package fr.upec.e2ee;
 
 import static java.util.Arrays.copyOfRange;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.widget.Toast;
 
+import androidx.security.crypto.EncryptedFile;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
@@ -19,29 +32,17 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import fr.upec.e2ee.mystate.MyDirectory;
-import fr.upec.e2ee.mystate.MyState;
-import fr.upec.e2ee.protocol.Cipher;
+import fr.upec.e2ee.protocol.Keys;
 
 /**
  * Frequently used functions
  */
 public class Tools {
-    /**
-     * PBKDF2 Number of iteration
-     */
-    public static final int PBKDF2_ITERATION = 1048576;
-
     /**
      * Get the current time as UNIX Timestamp
      *
@@ -72,6 +73,16 @@ public class Tools {
     }
 
     /**
+     * Format key to PEM format
+     *
+     * @param input Input
+     * @return Return Input as PEM format
+     */
+    public static String toPEMFormat(byte[] input) {
+        return "-----BEGIN PUBLIC KEY-----" + toBase64(input) + "-----END PUBLIC KEY-----";
+    }
+
+    /**
      * Decode Bytes to PublicKey
      *
      * @param bytesPubKey Bytes Public Key
@@ -90,34 +101,6 @@ public class Tools {
      */
     public static SecretKey toSecretKey(byte[] secretKeyBytes) {
         return new SecretKeySpec(secretKeyBytes, "AES");
-    }
-
-    /**
-     * Get Secret Key with PBKDF2
-     *
-     * @param password   Password
-     * @param salt       Salt
-     * @param iterations Iterations for PBKDF2
-     * @return Return SecretKey AES
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public static SecretKey getSecretKeyPBKDF2(char[] password, byte[] salt, int iterations) throws GeneralSecurityException {
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
-        PBEKeySpec pbeKeySpec = new PBEKeySpec(password, salt, iterations, 256);
-        SecretKey temp = keyFactory.generateSecret(pbeKeySpec);
-        return new SecretKeySpec(temp.getEncoded(), "AES");
-    }
-
-    /**
-     * Get Secret Key with PBKDF2
-     *
-     * @param password Password
-     * @param salt     Salt
-     * @return Return SecretKey AES
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public static SecretKey getSecretKeyPBKDF2(char[] password, byte[] salt) throws GeneralSecurityException {
-        return getSecretKeyPBKDF2(password, salt, PBKDF2_ITERATION);
     }
 
     /**
@@ -256,134 +239,6 @@ public class Tools {
     }
 
     /**
-     * Hashing the password
-     *
-     * @param password Password
-     * @return Return a hashed password
-     * @throws NoSuchAlgorithmException Throws NoSuchAlgorithmException if there is not the expected algorithm
-     */
-    public static String hashPassword(String password) throws NoSuchAlgorithmException {
-        byte[] digest = MessageDigest.getInstance("SHA-512").digest(password.getBytes(StandardCharsets.UTF_8));
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Create a new SecretKey PBKDF2 for the first time open
-     *
-     * @return Return SecretKey PBKDF2
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public static SecretKey createSecretKey(String hashedPassword) throws GeneralSecurityException {
-        byte[] salt = generateRandomBytes(32);
-        return getSecretKeyPBKDF2(hashedPassword.toCharArray(), salt);
-    }
-
-    /**
-     * Confirm the password
-     *
-     * @return Return a hashed password
-     * @throws NoSuchAlgorithmException Throws NoSuchAlgorithmException if there is not the expected algorithm
-     */
-    public static String getConfirmPassword() throws NoSuchAlgorithmException {
-        String password;
-        String confirmPassword;
-        do {
-            password = getInput("Create the password (0 = quit): ");
-            if (password.equals("0")) {
-                System.exit(0);
-            }
-            confirmPassword = getInput("Confirm the password (0 = quit): ");
-            if (confirmPassword.equals("0")) {
-                System.exit(0);
-            }
-            if (!password.equals(confirmPassword)) {
-                System.out.println("Not the same password!");
-            }
-        } while (!password.equals(confirmPassword));
-        return hashPassword(password);
-    }
-
-    /**
-     * Load a SecretKey PBKDF2
-     *
-     * @return Return SecretKey PBKDF2
-     * @throws FileNotFoundException    Throws FileNotFoundException if there file is not found
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public static SecretKey loadSecretKey(String hashedPassword) throws IOException, GeneralSecurityException {
-        String data = new String(readFile(MyState.FILENAME));
-        String[] rawData = data.split(",");
-
-        return getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.toBytes(rawData[3]));
-    }
-
-    /**
-     * Get the correct password and SecretKey
-     *
-     * @return Return a hashed password and SecretKey
-     * @throws FileNotFoundException    Throws FileNotFoundException if there file is not found
-     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
-     */
-    public static Map.Entry<String, SecretKey> getPassAndSecret() throws GeneralSecurityException, IOException {
-        HashMap<String, SecretKey> output = new HashMap<>();
-        Scanner scanner = new Scanner(new File(MyState.FILENAME));
-        String data = scanner.nextLine();
-        String[] rawData = data.split(",");
-
-        String hashedPassword;
-        SecretKey secretKey;
-        boolean cli = true;
-        do {
-            hashedPassword = hashPassword(getInput("Type your password (0 = quit): "));
-            if (hashedPassword.equals(hashPassword("0"))) {
-                System.exit(0);
-            }
-            secretKey = getSecretKeyPBKDF2(hashedPassword.toCharArray(), Tools.toBytes(rawData[4]));
-            if (testSecretKey(secretKey)) {
-                output.put(hashedPassword, secretKey);
-                cli = false;
-            }
-        } while (cli);
-        return output.entrySet().iterator().next();
-    }
-
-    /**
-     * Test the SecretKey
-     *
-     * @param secretKey SecretKey PBKDF2
-     * @return Return a boolean if the SecretKey is correct
-     */
-    public static Boolean testSecretKey(SecretKey secretKey) throws IOException {
-        try {
-            Cipher.decipher(secretKey, Tools.readFile(MyDirectory.FILENAME));
-        } catch (GeneralSecurityException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Get user input using nextLine() method
-     *
-     * @param sentence Sentence for the input
-     * @return Return user input
-     */
-    public static String getInput(String sentence) {
-        System.out.print(sentence);
-        Scanner scanner = new Scanner(System.in);
-
-        String input = scanner.nextLine();
-        if (input.equals("0")) {
-            return "0";
-        }
-        return input;
-    }
-
-    /**
      * Parser for the Public Key from PEM format
      *
      * @param keyPem Public Key
@@ -403,24 +258,7 @@ public class Tools {
         } else if (Tools.toBytes(keyPem).length == 91) {
             return keyPem;
         }
-        throw new IllegalArgumentException("Can't find public key!");
-    }
-
-    /**
-     * Write to file
-     *
-     * @param filename Filename
-     * @param input    Input to write
-     * @throws IOException Throws IOException if there is an I/O exception
-     */
-    public static void writeToFile(String filename, byte[] input) throws IOException {
-        Context context = E2EE.getContext();
-        if (!isFileExists(filename)) {
-            createFile(filename);
-        }
-        try (FileOutputStream fileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
-            fileOutputStream.write(input);
-        }
+        return null; //Not found
     }
 
     /**
@@ -433,5 +271,125 @@ public class Tools {
     public static byte[] readFile(String filename) throws IOException {
         Context context = E2EE.getContext();
         return Files.readAllBytes(new File(context.getFilesDir(), filename).toPath());
+    }
+
+    /**
+     * Get EncryptFile for read and write encrypted file
+     *
+     * @param filename Filename
+     * @return Return EncryptFile object
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     * @throws IOException              Throws IOException if there is an I/O exception
+     */
+    private static EncryptedFile getEncryptedFile(String filename) throws GeneralSecurityException, IOException {
+        Context context = E2EE.getContext();
+        File file = new File(context.getFilesDir(), filename);
+        String mainKeyAlias = Keys.getMainKeyAlias();
+        return new EncryptedFile.Builder(
+                file,
+                context,
+                mainKeyAlias,
+                EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build();
+    }
+
+    /**
+     * Write an encrypted file
+     *
+     * @param filename Filename
+     * @param data     Data to encrypt
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     * @throws IOException              Throws IOException if there is an I/O exception
+     */
+    public static void writeEncryptFile(String filename, byte[] data) throws GeneralSecurityException, IOException {
+        deleteFile(filename);
+        OutputStream outputStream = getEncryptedFile(filename).openFileOutput();
+        outputStream.write(data);
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    /**
+     * Read an encrypted file
+     *
+     * @param filename Filename
+     * @return Return data
+     * @throws GeneralSecurityException Throws GeneralSecurityException if there is a security-related exception
+     * @throws IOException              Throws IOException if there is an I/O exception
+     */
+    public static byte[] readEncryptedFile(String filename) throws GeneralSecurityException, IOException {
+        InputStream inputStream = getEncryptedFile(filename).openFileInput();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int nextByte = inputStream.read();
+        while (nextByte != -1) {
+            byteArrayOutputStream.write(nextByte);
+            nextByte = inputStream.read();
+        }
+
+        inputStream.close();
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    /**
+     * Prepare a Share Intent to share text
+     *
+     * @param input Input
+     * @return Return a Share Intent
+     */
+    public static Intent shareIntent(String input) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, input);
+        sendIntent.setType("text/plain");
+
+        return Intent.createChooser(sendIntent, null);
+    }
+
+    /**
+     * Copy input to the clipboard
+     *
+     * @param label Label of the input
+     * @param input Input
+     */
+    public static void copyToClipboard(String label, String input) {
+        ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText(label, input);
+        clipboard.setPrimaryClip(clipData);
+    }
+
+    /**
+     * Paste from clipboard
+     *
+     * @return Return string
+     */
+    public static String pasteFromClipboard() {
+        ClipboardManager clipboard = (ClipboardManager) E2EE.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+        return (String) item.getText();
+    }
+
+    /**
+     * Generate QR Code
+     *
+     * @param input Input
+     * @return Return QR Code as Bitmap
+     */
+    public static Bitmap generateQRCode(String input) {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = qrCodeWriter.encode(input, BarcodeFormat.QR_CODE, 1024, 1024);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            return bitmap;
+        } catch (WriterException e) {
+            Toast.makeText(E2EE.getContext(), R.string.err_qrc, Toast.LENGTH_SHORT).show();
+        }
+        throw new IllegalStateException("");
     }
 }

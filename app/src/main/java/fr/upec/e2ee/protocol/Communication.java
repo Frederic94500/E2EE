@@ -11,6 +11,8 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import fr.upec.e2ee.E2EE;
+import fr.upec.e2ee.R;
 import fr.upec.e2ee.Tools;
 import fr.upec.e2ee.mystate.MyDirectory;
 
@@ -40,7 +42,7 @@ public class Communication {
         byte[] otherMessage1Bytes = toBytes(otherMessage1);
 
         if (otherMessage1Bytes.length != 192) {
-            throw new IllegalArgumentException("The other Message 1 is not the expected size!");
+            throw new IllegalArgumentException(E2EE.getContext().getResources().getText(R.string.err_ex_size).toString());
         }
 
         long otherTimestamp = toLong(otherMessage1Bytes, 0, 8);
@@ -77,7 +79,6 @@ public class Communication {
     public static String createMessage2(PrivateKey myPrivateKey, SecretBuild mySecretBuild) throws GeneralSecurityException {
         byte[] message2Base64 = mySecretBuild.toBytesWithoutSymKey();
 
-        //Need to have an ID verification in Android
         byte[] signedMessage = Sign.sign(myPrivateKey, message2Base64);
         byte[] cipheredSignedMessage = Cipher.cipher(toSecretKey(mySecretBuild.getSymKey()), signedMessage);
 
